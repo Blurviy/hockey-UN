@@ -40,36 +40,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomNavigationBar(navController) }
-    ) { paddingValues ->
-        NavigationHost(navController = navController, paddingValues = paddingValues)
-    }
-}
-
-@Composable
-fun NavigationHost(
-    navController: NavController,
-    paddingValues: PaddingValues
-) {
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Home.route, // Set the start destination.
-        modifier = Modifier.padding(paddingValues)
-    ) {
-        composable(Screen.Home.route) { HomeScreen() }
-        composable(Screen.TeamRegistration.route) { TeamRegistrationScreen() }
-        composable(Screen.PlayerManagement.route) { PlayerManagementScreen() }
-        composable(Screen.Events.route) { EventScreen() }
-        composable(Screen.NewsAndUpdate.route) { NewsAndUpdateScreen() }
-        composable(Screen.Settings.route) { SettingsScreen() }
-    }
-}
 
 
 
