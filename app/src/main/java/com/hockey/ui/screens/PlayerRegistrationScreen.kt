@@ -1,233 +1,336 @@
 package com.hockey.ui.screens
 
 import android.os.Bundle
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.comhockey.ui.theme.ComhockeyTheme
 
 class MainActivity : ComponentActivity() {
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ComhockeyTheme {
+                RegistrationScreen()
+            }
+        }
+    }
+}
 
+data class Player(
+    val id: Int,
+    var email: String = "",
+    var mobileNumber: String = ""
+)
 
-                Modifier.background(color = Color.Blue)
-                var TeamName by remember {
-                    mutableStateOf("")
-                }
-                var TeamNames by remember {
-                    mutableStateOf(listOf<String>())
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegistrationScreen() {
+    var teamName by remember { mutableStateOf("") }
+    var managerName by remember { mutableStateOf("") }
+    var contactNumber by remember { mutableStateOf("") }
+    var players by remember { mutableStateOf(listOf(Player(1))) }
+    var birthCertificateUploaded by remember { mutableStateOf(false) }
+    var passportPhotoUploaded by remember { mutableStateOf(false) }
 
-                }
+    val scrollState = rememberScrollState()
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 500.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Team Registration",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
 
-                var ManagerName by remember {
-                    mutableStateOf("")
-                }
-                var ManagerNames by remember {
-                    mutableStateOf(listOf<String>())
+                Spacer(modifier = Modifier.height(24.dp))
 
-                }
+                Text(
+                    text = "Team Details",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
 
-                var Contact by remember {
-                    mutableStateOf("")
-                }
-                var Contacts by remember {
-                    mutableStateOf(listOf<Int>())
+                Spacer(modifier = Modifier.height(16.dp))
 
-                }
-                var EmailAdress by remember {
-                    mutableStateOf("")
-                }
-                var EmailAdresses by remember {
-                    mutableStateOf(listOf<String>())
+                Text(
+                    text = "Team Name",
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-                }
-                var MobileNumber by remember {
-                    mutableStateOf("")
-                }
-                var MobileNumbers by remember {
-                    mutableStateOf(listOf<Int>())
+                OutlinedTextField(
+                    value = teamName,
+                    onValueChange = { teamName = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    singleLine = true
+                )
 
-                }
+                Spacer(modifier = Modifier.height(8.dp))
 
+                Text(
+                    text = "Manager Name",
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-                Modifier.background(color = Color.Blue)
-                Column(
+                OutlinedTextField(
+                    value = managerName,
+                    onValueChange = { managerName = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    singleLine = true
+                )
 
-                    modifier = Modifier.size(width = 500.dp, height = 800.dp)
-                        .fillMaxSize()
-                        .padding(20.dp)
-                        .background(color = Color.White)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Contact Number",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                OutlinedTextField(
+                    value = contactNumber,
+                    onValueChange = { contactNumber = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-
                     Text(
-                        text = "Team Registration",
-                        modifier = Modifier ,
-                            style = MaterialTheme.typography.headlineLarge
-                    )
-                    Spacer(Modifier.heightIn(50.dp))
-                    Text(
-                        text = "Team Details",
-
-
-                        modifier = Modifier
-
-                    )
-                    Spacer(Modifier.heightIn(30.dp))
-                    Text(
-                        text = "Team Name",
-                        modifier = Modifier
-
+                        text = "Players",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    Row(modifier = Modifier.fillMaxWidth())
-                    {
-                        OutlinedTextField(
-                            value = TeamName, onValueChange = { text -> TeamName = text },
-                            modifier = Modifier.weight(1f)
+                    Button(
+                        onClick = {
+                            players = players + Player(players.size + 1)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("+ ADD PLAYER")
+                    }
+                }
+
+                players.forEachIndexed { index, player ->
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Player #${player.id}",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold
                         )
 
-                    }
-                    Text(
-                        text = "Manager Name",
-                        modifier = Modifier
-
-                    )
-                    Row(modifier = Modifier.fillMaxWidth())
-                    {
-                        OutlinedTextField(
-                            value = ManagerName,
-                            onValueChange = { text -> ManagerName = text },
-                            modifier = Modifier.weight(1f))
-
-                    }
-                    Text(
-                        text = "contacts",
-                        modifier = Modifier
-
-                    )
-                    Row(modifier = Modifier.fillMaxWidth())
-                    {
-                        OutlinedTextField(
-                            value = Contact, onValueChange = { text -> Contact = text },
-                            modifier = Modifier.weight(1f)
-                        )
-
-                    }
-                    Spacer(Modifier.heightIn(30.dp))
-                    Row {
-
-                        Text(text = "players")
-                        Spacer(Modifier.width(100.dp))
-                        Button(modifier = Modifier.
-                        height(50.dp).width(200.dp),
-                            shape = RoundedCornerShape(topStart =10.dp, bottomEnd =10.dp),
-                            enabled = true,
-                            colors = ButtonDefaults.buttonColors(
-                            )
-
-                            ,onClick = {
-                            if (TeamName.isNotBlank() && ManagerName.isNotBlank()) {
-                                TeamNames = TeamNames + TeamName
-                                ManagerNames = ManagerNames + ManagerName
+                        if (players.size > 1) {
+                            IconButton(
+                                onClick = {
+                                    players = players.filter { it.id != player.id }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Remove player",
+                                    tint = Color.Gray
+                                )
                             }
-                        }) {
-                            Text(text = "+ add player")
-
                         }
                     }
-                    Spacer(Modifier.heightIn(30.dp))
-                    Row {
-                        Text(text = "Player 1")
-                        Spacer(Modifier.width(30.dp))
-                    }
-                    Spacer(Modifier.heightIn(30.dp))
 
-                    Text(text = "Player emails")
-                    Row {
-                        OutlinedTextField(
-                            value = EmailAdress, onValueChange = { text -> EmailAdress = text },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    Text(text = "Player Mobile numbers")
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Row {
-                        OutlinedTextField(
-                            value = MobileNumber, onValueChange = { text -> MobileNumber = text },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    Spacer(Modifier.heightIn(50.dp))
+                    Text(text = "Email Address")
 
+                    OutlinedTextField(
+                        value = player.email,
+                        onValueChange = { newEmail ->
+                            val updatedPlayers = players.toMutableList()
+                            updatedPlayers[index] = player.copy(email = newEmail)
+                            players = updatedPlayers
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        singleLine = true
+                    )
 
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Button(modifier = Modifier.height(50.dp).width(140.dp), onClick = {}
+                    Text(text = "Mobile Number")
+
+                    OutlinedTextField(
+                        value = player.mobileNumber,
+                        onValueChange = { newNumber ->
+                            val updatedPlayers = players.toMutableList()
+                            updatedPlayers[index] = player.copy(mobileNumber = newNumber)
+                            players = updatedPlayers
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        singleLine = true
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                 Button(
+                    onClick = { birthCertificateUploaded = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = BorderStroke(1.dp, Color.Gray),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Submit registration")
-
+                        Text("Upload Birth Certificate (PDF)")
+                        Text("📎") // Using emoji instead of icon course the icons dont want to work  😢 
                     }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = { passportPhotoUploaded = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = BorderStroke(1.dp, Color.Gray),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Upload Passport Photo")
+                        Text("📷") // Using emoji instead of icon
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Information",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(end = 8.dp)
+                    )
 
 
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                Button(
+                    onClick = {  },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp), 
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        "SUBMIT REGISTRATION",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                  Spacer(modifier = Modifier.height(100.dp))
             }
-            /* Spacer(Modifier.heightIn(30.dp))
-                Column(modifier = Modifier.size(width = 500.dp, height =700.dp)
-                    .fillMaxSize()
-                    .padding(20.dp)
-                    .background(color = Color.Gray)) {
-
-
-                }*/
-
-
         }
-
-
-            }
-        }
-
-
-
-
+    }
+}
+//guys just increase the preview sizw if you cant see everything working
+@Preview(showBackground = true, heightDp = 1500)
+@Composable
+fun RegistrationScreenPreview() {
+    ComhockeyTheme {
+        RegistrationScreen()
+    }
+}
