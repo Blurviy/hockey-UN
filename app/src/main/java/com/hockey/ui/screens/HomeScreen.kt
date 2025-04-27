@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hockey.ui.theme.HockeyTheme
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier){
@@ -125,5 +126,7 @@ fun ActivityCard(title: String, description: String, time: String) {
 @Preview
 @Composable
 fun HomeScreenPreview(){
-    HomeScreen()
+    HockeyTheme {
+        HomeScreen()
+    }
 }

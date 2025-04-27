@@ -22,19 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.comhockey.ui.theme.ComhockeyTheme
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            ComhockeyTheme {
-                RegistrationScreen()
-            }
-        }
-    }
-}
+import com.hockey.ui.theme.HockeyTheme
 
 data class Player(
     val id: Int,
@@ -330,7 +318,7 @@ fun RegistrationScreen() {
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun RegistrationScreenPreview() {
-    ComhockeyTheme {
+    HockeyTheme {
         RegistrationScreen()
     }
 }
