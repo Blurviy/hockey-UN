@@ -32,7 +32,7 @@ data class Player(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationScreen() {
+fun PlayerRegistrationScreen() {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -236,7 +236,7 @@ fun RegistrationScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Upload Birth Certificate (PDF)")
-                        Text("📎") // Using emoji instead of icon course the icons dont want to work  😢 
+                        Text("📎") // Using emoji instead of icon course the icons dont want to work  😢
                     }
                 }
 
@@ -295,7 +295,7 @@ fun RegistrationScreen() {
                     onClick = {  },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp), 
+                        .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
@@ -317,8 +317,8 @@ fun RegistrationScreen() {
 //guys just increase the preview sizw if you cant see everything working
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
-fun RegistrationScreenPreview() {
+fun PlayerRegistrationScreenPreview() {
     HockeyTheme {
-        RegistrationScreen()
+        PlayerRegistrationScreen()
     }
 }
