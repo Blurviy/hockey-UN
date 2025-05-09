@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,18 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 
-@Composable
-fun NewsAndUpdateScreen(){
-    Box (modifier = Modifier
-        .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            text = "News and Real Time Updates Screen",
-            style = MaterialTheme.typography.headlineLarge
-        )
-    }
-}
 data class News(
     val title: String,
     val description: String,
@@ -50,7 +39,6 @@ data class News(
     val imageRes: Int// New field for more details
 
 )
-
 
 val newsList = listOf(
     News(
@@ -83,9 +71,8 @@ val newsList = listOf(
     )
 )
 
-
 @Composable
-fun NewsList(modifier: Modifier = Modifier) {
+fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -121,7 +108,7 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
                 contentDescription = news.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .size(60.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = news.title, style = MaterialTheme.typography.titleMedium)
@@ -162,7 +149,7 @@ fun NewsDialog(news: News, onDismiss: () -> Unit) {
 @Composable
 fun NewsPreview() {
     HockeyTheme {
-        NewsList()
+        NewsAndUpdateScreen()
     }
 }
 

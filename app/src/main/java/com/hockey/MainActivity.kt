@@ -27,7 +27,7 @@ import com.hockey.ui.screens.SignupScreen
 import com.hockey.ui.screens.TeamRegistrationScreen
 import com.hockey.ui.theme.HockeyTheme
 
-
+// DO NOT CHANGE ANYTHING HERE
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,17 +38,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
