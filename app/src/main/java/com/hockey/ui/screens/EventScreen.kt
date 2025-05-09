@@ -1,24 +1,37 @@
 package com.hockey.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 
 // Define a data class for events
@@ -26,7 +39,9 @@ data class Event(
     val id: Int,
     val title: String,
     val date: String,
-    val location: String
+    val location: String,
+    val teamCount: Int? = null,
+    val isActive: Boolean = false
 )
 
 // Sample events list
@@ -39,21 +54,37 @@ val events = listOf(
 
 @Composable
 fun EventScreen(
-    onEventClick: (Event) -> Unit = {} // Default empty lambda for preview
+    onEventClick: (Event) -> Unit = {}, // Default empty lambda for preview
+    onRegisterTeamClick: (Event) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Upcoming Events",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        // Header with title and filter icon
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Event Entries",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
+                contentDescription = "Filter",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle filter click */ }
+            )
+        }
         LazyColumn(
             contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -62,7 +93,8 @@ fun EventScreen(
             items(events) { event ->
                 EventCard(
                     event = event,
-                    onClick = { onEventClick(event) }
+                    onClick = { onEventClick(event) },
+                    onRegisterTeamClick = { onRegisterTeamClick(event)}
                 )
             }
         }
@@ -70,9 +102,13 @@ fun EventScreen(
 }
 
 @Composable
+private fun function(): (Event) -> Unit = {}
+
+@Composable
 fun EventCard(
     event: Event,
     onClick: () -> Unit,
+    onRegisterTeamClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -84,21 +120,97 @@ fun EventCard(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = event.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Date: ${event.date}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Location: ${event.location}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            // Event title and status row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = event.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                if (event.isActive) {
+                    Text(
+                        text = "ACTIVE",
+                        color = Color.Green,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier
+                            .background(Color.Green.copy(alpha = 0.1f), shape = MaterialTheme.shapes.small)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
+
+            // Date row
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_calendar_today), // Replace with actual calendar icon resource
+                    contentDescription = "Date",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = event.date,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+            }
+
+            // Location row
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_location), // Replace with actual location icon resource
+                    contentDescription = "Location",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = event.location,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+            }
+
+            // Team count row (if active)
+            if (event.teamCount != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_groups), // Replace with actual teams icon resource
+                        contentDescription = "Teams",
+                        modifier = Modifier.size(16.dp),
+                        tint = Color.Gray
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${event.teamCount} Teams Registered",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            // Register Team button
+            Button(
+                onClick = onRegisterTeamClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add), // Replace with actual register icon resource
+                    contentDescription = "Register Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("REGISTER TEAM")
+            }
         }
     }
 }
