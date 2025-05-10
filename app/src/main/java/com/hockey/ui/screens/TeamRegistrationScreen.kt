@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hockey.ui.theme.HockeyTheme
 
-data class Player(
+data class Team(
     val id: Int,
     var email: String = "",
     var mobileNumber: String = ""
@@ -32,7 +32,7 @@ data class Player(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerRegistrationScreen() {
+fun TeamRegistrationScreen() {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -317,8 +317,8 @@ fun PlayerRegistrationScreen() {
 //guys just increase the preview sizw if you cant see everything working
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
-fun PlayerRegistrationScreenPreview() {
+fun TeamRegistrationScreenPreview() {
     HockeyTheme {
-        PlayerRegistrationScreen()
+       TeamRegistrationScreen()
     }
 }
