@@ -1,9 +1,11 @@
 package com.hockey.ui.screens
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.ColumnScopeInstance.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -25,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,18 +82,35 @@ val newsList = listOf(
 fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    LazyColumn(modifier = modifier) {
-        items(newsList) { news ->
-            NewsCard(news) {
-                // When a news item is clicked, show the dialog
-                selectedNews = news
-                showDialog = true
+    // Wrap everything in a Column to structure the screen
+    Column(modifier = modifier.fillMaxSize()) {
+
+        // Back button at the top of the screen
+        IconButton(
+            onClick = {
+                (context as? ComponentActivity)?.finish()
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.Start)
+        ) {
+            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+        }
+
+        // News list
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(newsList) { news ->
+                NewsCard(news) {
+                    selectedNews = news
+                    showDialog = true
+                }
             }
         }
     }
 
-    // Show dialog when a news item is clicked
+    // Show dialog if news is selected
     if (showDialog && selectedNews != null) {
         NewsDialog(news = selectedNews!!, onDismiss = { showDialog = false })
     }
@@ -102,6 +126,7 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
         shape = RoundedCornerShape(8.dp),
         //elevation = 4.dp
     ) {
+
         Column(modifier = Modifier.padding(16.dp)) {
             Image(
                 painter = painterResource(id = news.imageRes),

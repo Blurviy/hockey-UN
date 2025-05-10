@@ -48,12 +48,12 @@ fun MainScreen(modifier: Modifier= Modifier) {
             badgeCount = 0
             // route = Screen.TeamRegistration.route
         ),
-        NavBarItem(
+        /*NavBarItem(
             label = "Players",
             icon = Icons.Default.Person,
             badgeCount = 0
             // route = Screen.PlayerManagement.route
-        ),
+        ),*/
         NavBarItem(
             label = "Events",
             icon = Icons.Default.DateRange,
@@ -116,10 +116,10 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     when (selectedScreen) {
         0 -> HomeScreen()
         1 -> TeamRegistrationScreen()
-        2 -> PlayerManagementScreen()
-        3 -> EventScreen()
-        4 -> NewsAndUpdateScreen()
-        5 -> SettingsScreen()
+        //2 -> PlayerManagementScreen()
+        2 -> EventScreen()
+        3 -> NewsAndUpdateScreen()
+        4-> SettingsScreen()
     }
 
 }

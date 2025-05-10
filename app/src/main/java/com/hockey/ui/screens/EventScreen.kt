@@ -54,6 +54,7 @@ val events = listOf(
 
 @Composable
 fun EventScreen(
+
     onEventClick: (Event) -> Unit = {}, // Default empty lambda for preview
     onRegisterTeamClick: (Event) -> Unit = {}
 ) {

@@ -13,6 +13,7 @@ fun SignupScreen(){
     Box (modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center
+
     ){
         Text(
             text = "SignUp Screen",

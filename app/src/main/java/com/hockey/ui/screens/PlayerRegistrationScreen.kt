@@ -14,11 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ fun PlayerRegistrationScreen() {
     var passportPhotoUploaded by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -65,8 +68,16 @@ fun PlayerRegistrationScreen() {
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.Start
             ) {
+                IconButton(
+                    onClick = {
+                        (context as? ComponentActivity)?.finish()
+                    },
+                    modifier = Modifier.align(Alignment.Start)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
                 Text(
-                    text = "Team Registration",
+                    text = "Player Registration",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
