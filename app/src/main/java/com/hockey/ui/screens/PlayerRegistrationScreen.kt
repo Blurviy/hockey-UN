@@ -82,61 +82,11 @@ fun PlayerRegistrationScreen() {
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Team Details",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Team Name",
-                    style = MaterialTheme.typography.bodyMedium
-                )
 
-                OutlinedTextField(
-                    value = teamName,
-                    onValueChange = { teamName = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
-                )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Manager Name",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                OutlinedTextField(
-                    value = managerName,
-                    onValueChange = { managerName = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Contact Number",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                OutlinedTextField(
-                    value = contactNumber,
-                    onValueChange = { contactNumber = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
-                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -273,7 +223,7 @@ fun PlayerRegistrationScreen() {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+
 
 
                 Row(
@@ -287,38 +237,38 @@ fun PlayerRegistrationScreen() {
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Information",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp)
-                    )
-
-
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-
-                Button(
-                    onClick = {  },
-                    modifier = Modifier
+                    Row( modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        "SUBMIT REGISTRATION",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
+
                     )
+
+                    {
+
+                        Button(
+                            onClick = {  },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                "SUBMIT PLAYER",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                    }
+
                 }
+
+
+
+
 
                   Spacer(modifier = Modifier.height(100.dp))
             }
