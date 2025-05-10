@@ -56,7 +56,8 @@ val events = listOf(
 fun EventScreen(
 
     onEventClick: (Event) -> Unit = {}, // Default empty lambda for preview
-    onRegisterTeamClick: (Event) -> Unit = {}
+    onRegisterTeamClick: (Event) -> Unit = {},
+    onAddEventClick: (Event) -> Unit = {} /**TODO add an event creation screen**/
 ) {
     Column(
         modifier = Modifier
@@ -77,6 +78,14 @@ fun EventScreen(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
+                contentDescription = "Add Event",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle filter click */ },
+
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource

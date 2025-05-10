@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.hockey.ui.screens.EventScreen
 import com.hockey.ui.screens.HomeScreen
 import com.hockey.ui.screens.NewsAndUpdateScreen
@@ -79,7 +80,9 @@ fun MainScreen(modifier: Modifier= Modifier) {
 
     // Scaffold provides the basic layout structure with a bottom navigation bar
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 5.dp),
         bottomBar = {
             NavigationBar {
                 // Dynamically create navigation items
