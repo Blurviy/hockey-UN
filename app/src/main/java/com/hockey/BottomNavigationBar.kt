@@ -30,7 +30,7 @@ import com.hockey.ui.screens.HomeScreen
 import com.hockey.ui.screens.NewsAndUpdateScreen
 import com.hockey.ui.screens.PlayerManagementScreen
 import com.hockey.ui.screens.SettingsScreen
-import com.hockey.ui.screens.TeamRegistrationScreen
+import com.hockey.ui.screens.TeamManagementScreen
 
 @Composable
 fun MainScreen(modifier: Modifier= Modifier) {
@@ -118,7 +118,8 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     // Display the content of the selected screen using a `when` block
     when (selectedScreen) {
         0 -> HomeScreen()
-        1 -> TeamRegistrationScreen()
+        1 -> TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
+        //1 -> TeamRegistrationScreen() moved
         //2 -> PlayerManagementScreen()
         2 -> EventScreen()
         3 -> NewsAndUpdateScreen()
