@@ -27,7 +27,7 @@ fun TeamManagementScreen(context: Context) {
     ) {
         // Screen title
         Text(
-            text = "Team Management",
+            text = "Team",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)

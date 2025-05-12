@@ -2,6 +2,7 @@ package com.hockey
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hockey.ui.screens.EventScreen
@@ -39,13 +41,19 @@ fun MainScreen(modifier: Modifier= Modifier) {
     val navBarItemList = listOf(
         NavBarItem(
             label = "Home",
-            icon = Icons.Default.Home,
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") },
             badgeCount = 0
             // route = Screen.Home.route
         ),
         NavBarItem(
             label = "Team",
-            icon = Icons.Default.Star,
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_groups), // Custom icon for "Team"
+                    contentDescription = "Team Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
             badgeCount = 0
             // route = Screen.TeamRegistration.route
         ),
@@ -57,19 +65,19 @@ fun MainScreen(modifier: Modifier= Modifier) {
         ),*/
         NavBarItem(
             label = "Events",
-            icon = Icons.Default.DateRange,
+            icon = { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") },
             badgeCount = 0
             // route = Screen.Events.route
         ),
         NavBarItem(
-            label = "Notifications",
-            icon = Icons.Default.Notifications,
+            label = "Updates",
+            icon = { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") },
             badgeCount = 0
             // route = Screen.NewsAndUpdate.route
         ),
         NavBarItem(
             label = "Settings",
-            icon = Icons.Default.Settings,
+            icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") },
             badgeCount = 0
             // route = Screen.Settings.route
         )
@@ -98,7 +106,9 @@ fun MainScreen(modifier: Modifier= Modifier) {
                                         Text(text = navBarItem.badgeCount.toString())
                                     }
                             }) {
-                                Icon(imageVector = navBarItem.icon, contentDescription = "Icon") }
+                            }
+                            navBarItem.icon() // changed to enable custom fonts
+                               // Icon(imageVector = navBarItem.icon, contentDescription = "Icon") }
                             },
                         label = {
                             Text(navBarItem.label)
@@ -131,7 +141,7 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
 // Data class representing a navigation bar item
 data class NavBarItem (
     val label: String,
-    val icon: ImageVector, // Icon representing the item
+    val icon: @Composable () -> Unit, // Icon representing the item
     var badgeCount: Int, // Badge count for notifications
     )
 

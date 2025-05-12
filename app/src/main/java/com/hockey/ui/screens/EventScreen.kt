@@ -15,6 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -23,6 +29,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,53 +69,69 @@ fun EventScreen(
     onRegisterTeamClick: (Event) -> Unit = {},
     onAddEventClick: (Event) -> Unit = {} /**TODO add an event creation screen**/
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Header with title and filter icon
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Event Entries",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
-                contentDescription = "Add Event",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* Handle filter click */ },
+    var selectedEvent by remember { mutableStateOf<Event?>(null) } // Explicitly allow null values
+    var showRegistrationScreen by remember { mutableStateOf(false) }
 
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
-                contentDescription = "Filter",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* Handle filter click */ }
-            )
-        }
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()
+    if (showRegistrationScreen && selectedEvent != null) {
+        // Show the registration screen when an event is selected
+        EventRegistrationScreen(
+            event = selectedEvent!!,
+            onConfirmRegistration = { teamName ->
+                // Handle registration confirmation
+                showRegistrationScreen = false // Return to event list after confirmation
+            },
+            onCancelRegistration = {
+                // Handle cancellation
+                showRegistrationScreen = false // Return to event list
+            }
+        )
+    } else {
+        // SHow the Event List
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(events) { event ->
-                EventCard(
-                    event = event,
-                    onClick = { onEventClick(event) },
-                    onRegisterTeamClick = { onRegisterTeamClick(event)}
+            // Header with title and filter icon
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Event Entries",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium
                 )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
+                    contentDescription = "Filter",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { /* Handle filter click */ }
+                )
+            }
+
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(events) { event ->
+                    EventCard(
+                        event = event,
+                        onClick = { onEventClick(event) },
+                        onRegisterTeamClick = {
+                            selectedEvent = event // sets the current selected event
+                            showRegistrationScreen = true // Navigate to Evernt registration
+                        }
+                    )
+                }
             }
         }
     }
@@ -149,7 +175,10 @@ fun EventCard(
                         color = Color.Green,
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier
-                            .background(Color.Green.copy(alpha = 0.1f), shape = MaterialTheme.shapes.small)
+                            .background(
+                                Color.Green.copy(alpha = 0.1f),
+                                shape = MaterialTheme.shapes.small
+                            )
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
@@ -222,6 +251,30 @@ fun EventCard(
                 Text("REGISTER TEAM")
             }
         }
+    }
+}
+
+@Composable
+fun EventScreenDropDown(){
+    var expanded by remember { mutableStateOf(false) } // State to control the visibility of the drop down menu
+
+    val menuItems = listOf (
+        "Unread" to Icons.Default.Message,
+        "Favorites" to Icons.Default.Favorite,
+        "Contacts" to Icons.Default.Person,
+        "Non-contacts" to Icons.Default.Person,
+        "Groups" to Icons.Default.Group,
+        "Drafts" to Icons.Default.Message
+    )
+
+    /**TODO Implementation of code for the drop down**/
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EventScreenDropDownPreview() {
+    HockeyTheme {
+        EventScreenDropDown()
     }
 }
 
