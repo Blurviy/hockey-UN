@@ -26,8 +26,10 @@ import com.hockey.ui.screens.SettingsScreen
 import com.hockey.ui.screens.SignupScreen
 import com.hockey.ui.screens.TeamRegistrationScreen
 import com.hockey.ui.theme.HockeyTheme
-
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 // DO NOT CHANGE ANYTHING HERE
+@HiltAndroidApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
