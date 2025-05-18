@@ -130,7 +130,7 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
         0 -> HomeScreen()
         1 -> TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
         //1 -> TeamRegistrationScreen() moved
-        //2 -> PlayerManagementScreen()
+       // 2 -> PlayerManagementScreen()
         2 -> EventScreen()
         3 -> NewsAndUpdateScreen()
         4-> SettingsScreen()
