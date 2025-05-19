@@ -1,6 +1,15 @@
 package com.hockey.ui.screens
 
+import android.content.Intent
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import android.net.Uri
+import androidx.compose.foundation.layout.Box
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 
@@ -43,8 +53,8 @@ data class News(
     val description: String,
     val time: String,
     val detailedInfo: String,
-    val imageRes: Int// New field for more details
-
+    val imageRes: Int, // New field for more details
+    val link: String? // Link can be null for news without external links
 )
 
 val newsList = listOf(
@@ -53,28 +63,40 @@ val newsList = listOf(
         "The new season kicks off next month with exciting games.",
         "March 10, 2025 | 5:30 PM",
         "The upcoming hockey season is expected to be one of the most exciting in recent years, with new teams joining the league and a change in the tournament structure.",
-        R.drawable.game
+        R.drawable.game,
+        null
     ),
     News(
         "Team Wins Big Match",
         "The team defeated their rivals in a thrilling game last night.",
         "March 8, 2025 | 10:00 AM",
         "The match was intense, with several highlight moments. The final score was 4-3 in favor of our team, and the crowd went wild during the final seconds.",
-        R.drawable.winguys
+        R.drawable.winguys,
+        null
     ),
     News(
         "Player Injury Update",
         "The star player is expected to make a full recovery in two weeks.",
         "March 5, 2025 | 8:45 AM",
         "After a tough match, the player was injured but is now recovering. Medical staff have assured that the recovery will be swift, and the player will return soon.",
-        R.drawable.guyteam
+        R.drawable.guyteam,
+        null
     ),
     News(
         "Upcoming Game Schedule",
         "The next match is against Team X on March 15, 2025.",
         "March 2, 2025 | 2:00 PM",
         "The upcoming game against Team X is highly anticipated. Fans are excited, and tickets are selling out quickly. It promises to be an exciting matchup!",
-        R.drawable.winguys
+        R.drawable.winguys,
+        null
+    ),
+    News(
+        "Namibian Hockey Giant Departs",
+        "Marc Nel, the president of Namibia Hockey, has passed away.",
+        "June 28, 2021 | 10:00 AM",
+        "Namibia's hockey community mourns the loss of their president, Marc Nel, who passed away due to Covid-19 complications.",
+        R.drawable.hockey_giant_departs, // Update this with the uploaded image
+        "https://namibiahockey.org/2021/06/28/a-namibian-hockey-giant-departs/"
     )
 )
 
@@ -82,47 +104,93 @@ val newsList = listOf(
 fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+    var showWebView by remember { mutableStateOf(false) }
+    var currentUrl by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     // Wrap everything in a Column to structure the screen
     Column(modifier = modifier.fillMaxSize()) {
+        if (showWebView) {
+            // Back button for WebView
+            IconButton(
+                onClick = { showWebView = false },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.Start)
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
 
-        // Back button at the top of the screen
-        IconButton(
-            onClick = {
-                (context as? ComponentActivity)?.finish()
-            },
-            modifier = Modifier
-                .padding(8.dp)
-                .align(Alignment.Start)
-        ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-        }
+            // WebView display
+            WebViewScreen(url = currentUrl)
+        } else {
+            // News list with Back button
+            IconButton(
+                onClick = {
+                    (context as? ComponentActivity)?.finish()
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.Start)
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
 
-        // News list
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(newsList) { news ->
-                NewsCard(news) {
-                    selectedNews = news
-                    showDialog = true
+
+            // Show the News List
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(newsList) { news ->
+                    NewsCard(news) {
+                        if (news.link != null) {
+                            currentUrl = news.link
+                            showWebView = true
+                        } else {
+                            selectedNews = news
+                            showDialog = true
+                        }
+                    }
                 }
             }
-        }
-    }
 
-    // Show dialog if news is selected
-    if (showDialog && selectedNews != null) {
-        NewsDialog(news = selectedNews!!, onDismiss = { showDialog = false })
+            // Show dialog if news is selected
+            if (showDialog && selectedNews != null) {
+                NewsDialog(news = selectedNews!!, onDismiss = { showDialog = false })
+            }
+        }
     }
 }
 
 @Composable
+fun WebViewScreen(url: String) {
+    AndroidView(
+        factory = { context ->
+            WebView(context).apply {
+                webViewClient = WebViewClient() // Ensures links open in the WebView itself
+                loadUrl(url)
+                settings.javaScriptEnabled = true // Enable JavaScript if needed
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
 fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
+            .clickable {
+                // Open webpage if link exists, otherwise trigger onClick
+                if (news.link != null) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.link))
+                    context.startActivity(intent)
+                } else {
+                    onClick()
+                }
+            },
         shape = RoundedCornerShape(8.dp),
         //elevation = 4.dp
     ) {

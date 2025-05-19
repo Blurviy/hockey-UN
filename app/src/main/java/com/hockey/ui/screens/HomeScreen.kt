@@ -34,6 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.ui.theme.HockeyTheme
 
+// Data classes to represent QuickStats and Activities
+data class QuickStat(val title: String, val value: String, val icon: ImageVector, val onClick: () -> Unit)
+data class Activity(val title: String, val description: String, val time: String) // Activity updates
+
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier){
     // State to track the current screen to display
@@ -43,6 +47,34 @@ fun HomeScreen(modifier: Modifier = Modifier){
     BackHandler(enabled = selectedScreen != "home") {
         selectedScreen = "home" // Navigate back to the home Screen
     }
+
+    val quickStats = listOf(
+        QuickStat(
+            title = "Active Teams",
+            value = "12",
+            icon = Icons.Outlined.People,
+            onClick = { selectedScreen = "active_teams" }
+        ),
+        QuickStat(
+            title = "Upcoming Events",
+            value = "5",
+            icon = Icons.Outlined.Schedule,
+            onClick = { selectedScreen = "events" }
+        )
+    )
+
+    val activities = listOf(
+        Activity(
+            title = "New Player Added",
+            description = "Mike Johnson joined Team Eagles",
+            time = "2 hours ago"
+        ),
+        Activity(
+            title = "Tournament Update",
+            description = "Spring League 2025 registration open",
+            time = "5 hours ago"
+        )
+    )
 
     // Display different screens based on selectedScreen state
     when (selectedScreen) {
@@ -70,18 +102,14 @@ fun HomeScreen(modifier: Modifier = Modifier){
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    QuickStatsCard(
-                        title = "Active Teams",
-                        value = "12",
-                        icon = Icons.Outlined.People,
-                        onClick = { selectedScreen = "active_teams"}
-                    )
-                    QuickStatsCard(
-                        title = "Upcoming Events",
-                        value = "5",
-                        icon = Icons.Outlined.Schedule,
-                        onClick = { selectedScreen = "events" } // Change state to navigate to events screen
-                    )
+                    quickStats.forEach { stat ->
+                        QuickStatsCard(
+                            title = stat.title,
+                            value = stat.value,
+                            icon = stat.icon,
+                            onClick = stat.onClick
+                        )
+                    }
                 }
 
                 // Recent Activities Section
@@ -90,16 +118,13 @@ fun HomeScreen(modifier: Modifier = Modifier){
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                ActivityCard(
-                    title = "New Player Added",
-                    description = "Mike Johnson joined Team Eagles",
-                    time = "2 hours ago"
-                )
-                ActivityCard(
-                    title = "Tournament Update",
-                    description = "Spring League 2025 registration open",
-                    time = "5 hours ago"
-                )
+                activities.forEach { activity ->
+                    ActivityCard(
+                        title = activity.title,
+                        description = activity.description,
+                        time = activity.time
+                    )
+                }
             }
         }
         "events" -> {
