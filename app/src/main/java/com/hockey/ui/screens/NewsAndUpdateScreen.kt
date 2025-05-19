@@ -138,7 +138,9 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
 
 
             // Show the News List
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 60.dp)) {
                 items(newsList) { news ->
                     NewsCard(news) {
                         if (news.link != null) {
