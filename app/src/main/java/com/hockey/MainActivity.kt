@@ -27,6 +27,11 @@ import com.hockey.ui.screens.SignupScreen
 import com.hockey.ui.screens.TeamRegistrationScreen
 import com.hockey.ui.theme.HockeyTheme
 import android.app.Application
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.hockey.ui.screens.LoginScreen
+import com.hockey.ui.viewmodel.AuthViewModel
 import dagger.hilt.android.HiltAndroidApp
 // DO NOT CHANGE ANYTHING HERE
 @HiltAndroidApp
@@ -36,16 +41,38 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HockeyTheme {
-                MainScreen()
+                val navController = rememberNavController()
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val currentUser by authViewModel.currentUser.collectAsState()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = if (currentUser != null) "main" else "login"
+                ) {
+                    composable("login") {
+                        LoginScreen(
+                            onLoginSuccess = { navController.navigate("main") },
+                            onNavigateToSignup = { navController.navigate("signup") }
+                        )
+                    }
+                    composable("signup") {
+                        SignupScreen(
+                            onSignupSuccess = { navController.navigate("main") },
+                            onNavigateToLogin = { navController.navigate("login") }
+                        )
+                    }
+                    composable("main") {
+                        MainScreen(
+                            onLogout = {
+                                authViewModel.logout()
+                                navController.navigate("login") {
+                                    popUpTo("main") { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HockeyTheme {
-        MainScreen()
     }
 }
