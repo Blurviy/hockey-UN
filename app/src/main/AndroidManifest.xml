@@ -34,6 +34,15 @@
         <!-- PlayerRegistrationActivity -->
         <activity android:name=".ui.screens.PlayerRegistrationActivity" />
 
+        <!-- LoginActivity -->
+        <activity android:name=".ui.screens.LoginActivity" />
+
+        <!-- SignupActivity -->
+        <activity android:name=".ui.screens.SignupActivity" />
+
+        <!-- com.hockey.ui.screens.Main1Activity -->
+        <activity android:name=".ui.screens.Main1Activity" />
+
     </application>
 
 </manifest>

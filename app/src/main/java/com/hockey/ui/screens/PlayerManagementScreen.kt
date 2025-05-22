@@ -1,5 +1,6 @@
 package com.hockey.ui.screens
 
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,7 +39,6 @@ val athletes = listOf(
     Athlete(3, "Mike Wilson", "Defender", "5 Clean Sheets", R.drawable.mike_wilson)
 )
 
-
 @Composable
 fun PlayerManagementScreen(
     onAddAthleteClick: () -> Unit = {}, // Callback for adding an athlete
@@ -76,7 +76,7 @@ fun PlayerManagementScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
             Button(
-                onClick = onAddAthleteClick,
+                onClick = { context.startActivity(Intent(context, PlayerRegistrationActivity::class.java)) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier.height(36.dp)
             ) {

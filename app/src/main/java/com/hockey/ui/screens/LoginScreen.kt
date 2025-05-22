@@ -1,6 +1,6 @@
 package com.hockey.ui.screens
 
-import android.provider.CalendarContract.Colors
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,6 +26,7 @@ fun LoginScreen(
     ) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -112,7 +113,7 @@ fun LoginScreen(
 
         // Register Button
         Button(
-            onClick = onRegisterClick,
+            onClick = { context.startActivity(Intent(context, SignupActivity::class.java)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -140,6 +141,20 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text("Forgot Password?", color = Color.Blue)
+        }
+
+        // Continue as Guest
+        TextButton(
+            onClick = { context.startActivity(Intent(context, Main1Activity::class.java)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_person_add),
+                contentDescription = "Home icon",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Continue to App", color = Color.Blue)
         }
     }
 }
