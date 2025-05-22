@@ -356,18 +356,21 @@ fun TeamRegistrationScreen(
                 Button(
                     onClick = {
                         if (teamName.isNotBlank() && managerName.isNotBlank()) {
-                            // First, create the team
-                            teamViewModel.addTeam(teamName, managerName, contactNumber)
+                            viewModel.addTeam(teamName, managerName, contactNumber)
 
-                            // Note: In a real implementation, you'd need to get the team ID
-                            // after creation to associate players with the team
-                            // For now, we're just creating the team
-
-                            // Clear the form after successful submission
-                            teamName = ""
-                            managerName = ""
-                            contactNumber = ""
-                            players = listOf(PlayerData(1))
+                            // After successful submission, add players
+                            viewModel.teams.value.lastOrNull()?.let { newTeam ->
+                                players.forEach { playerData ->
+                                    playerViewModel.addPlayer(
+                                        teamId = newTeam.teamId,
+                                        name = playerData.name,
+                                        email = playerData.email,
+                                        mobileNumber = playerData.mobileNumber,
+                                        birthCertificatePath = if (birthCertificateUploaded) "path_to_file" else null,
+                                        passportPhotoPath = if (passportPhotoUploaded) "path_to_file" else null
+                                    )
+                                }
+                            }
                         }
                     },
                     modifier = Modifier

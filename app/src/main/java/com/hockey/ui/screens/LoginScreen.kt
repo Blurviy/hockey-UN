@@ -15,15 +15,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginClick: (String, String) -> Unit = { _, _ -> }, // Default empty lambda for preview
-    onRegisterClick: () -> Unit = {}, // Callback for registration
-    onForgotPasswordClick: () -> Unit = {} // Callback for password navigation navigation
-    ) {
+    onLoginSuccess: () -> Unit = {},
+    onNavigateToSignup: () -> Unit = {},
+    viewModel: AuthViewModel = hiltViewModel()  ) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 

@@ -7,15 +7,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hockey.data.dao.PlayerDao
 import com.hockey.data.dao.TeamDao
+import com.hockey.data.dao.UserDao
 import com.hockey.data.entities.Player
 import com.hockey.data.entities.Team
+import com.hockey.data.entities.User
 
 @Database(
-    entities = [Team::class, Player::class],
-    version = 1,
+    entities = [Team::class, Player::class, User::class], // Add User here
+    version = 2, // Increment version
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
     abstract fun teamDao(): TeamDao
     abstract fun playerDao(): PlayerDao
 

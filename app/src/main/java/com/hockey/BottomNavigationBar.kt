@@ -125,17 +125,29 @@ fun MainScreen(modifier: Modifier= Modifier) {
 
 @Composable
 fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
-    // Display the content of the selected screen using a `when` block
-    when (selectedScreen) {
-        0 -> HomeScreen()
-        1 -> TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
-        //1 -> TeamRegistrationScreen() moved
-        //2 -> PlayerManagementScreen()
-        2 -> EventScreen()
-        3 -> NewsAndUpdateScreen()
-        4-> SettingsScreen()
-    }
+    val navController = rememberNavController()
 
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+        modifier = modifier
+    ) {
+        composable("home") { HomeScreen() }
+        composable("team") {
+            TeamManagementScreen(
+                onTeamSelected = { teamId ->
+                    navController.navigate("players/$teamId")
+                }
+            )
+        }
+        composable("players/{teamId}") { backStackEntry ->
+            val teamId = backStackEntry.arguments?.getString("teamId")?.toLongOrNull() ?: 0L
+            PlayerManagementScreen(teamId = teamId)
+        }
+        composable("events") { EventScreen() }
+        composable("updates") { NewsAndUpdateScreen() }
+        composable("settings") { SettingsScreen() }
+    }
 }
 
 // Data class representing a navigation bar item
