@@ -1,9 +1,5 @@
 package com.hockey.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,7 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,25 +18,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodel.TeamViewModel
+import com.hockey.ui.viewmodel.PlayerViewModel
 
-data class Team(
+data class PlayerData(
     val id: Int,
+    var name: String = "",
     var email: String = "",
     var mobileNumber: String = ""
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamRegistrationScreen() {
+fun TeamRegistrationScreen(
+    onNavigateBack: () -> Unit = {},
+    teamViewModel: TeamViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel()
+) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
-    var players by remember { mutableStateOf(listOf(Player(1))) }
+    var players by remember { mutableStateOf(listOf(PlayerData(1))) }
     var birthCertificateUploaded by remember { mutableStateOf(false) }
     var passportPhotoUploaded by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+    val isLoading by teamViewModel.isLoading.collectAsState()
+    val error by teamViewModel.error.collectAsState()
+
+    // Show success message and navigate back when team is created
+    LaunchedEffect(error) {
+        if (error == null && isLoading == false && teamName.isNotEmpty()) {
+            // Team created successfully, you might want to show a success message
+            // and then navigate back or clear the form
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -65,6 +79,14 @@ fun TeamRegistrationScreen() {
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.Start
             ) {
+                // Back button
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.align(Alignment.Start)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+
                 Text(
                     text = "Team Registration",
                     style = MaterialTheme.typography.headlineSmall,
@@ -72,6 +94,23 @@ fun TeamRegistrationScreen() {
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                // Error display
+                error?.let { errorMessage ->
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Error: $errorMessage",
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 Text(
                     text = "Team Details",
@@ -92,7 +131,8 @@ fun TeamRegistrationScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    singleLine = true
+                    singleLine = true,
+                    enabled = !isLoading
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -108,7 +148,8 @@ fun TeamRegistrationScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    singleLine = true
+                    singleLine = true,
+                    enabled = !isLoading
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -124,7 +165,8 @@ fun TeamRegistrationScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    singleLine = true
+                    singleLine = true,
+                    enabled = !isLoading
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -142,13 +184,14 @@ fun TeamRegistrationScreen() {
 
                     Button(
                         onClick = {
-                            players = players + Player(players.size + 1)
+                            players = players + PlayerData(players.size + 1)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                         ),
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(4.dp),
+                        enabled = !isLoading
                     ) {
                         Text("+ ADD PLAYER")
                     }
@@ -172,7 +215,8 @@ fun TeamRegistrationScreen() {
                             IconButton(
                                 onClick = {
                                     players = players.filter { it.id != player.id }
-                                }
+                                },
+                                enabled = !isLoading
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
@@ -182,6 +226,24 @@ fun TeamRegistrationScreen() {
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(text = "Player Name")
+
+                    OutlinedTextField(
+                        value = player.name,
+                        onValueChange = { newName ->
+                            val updatedPlayers = players.toMutableList()
+                            updatedPlayers[index] = player.copy(name = newName)
+                            players = updatedPlayers
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        singleLine = true,
+                        enabled = !isLoading
+                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -197,7 +259,8 @@ fun TeamRegistrationScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -214,13 +277,14 @@ fun TeamRegistrationScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading
                     )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                 Button(
+                Button(
                     onClick = { birthCertificateUploaded = true },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -228,7 +292,8 @@ fun TeamRegistrationScreen() {
                         contentColor = Color.Black
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
+                    enabled = !isLoading
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -236,7 +301,7 @@ fun TeamRegistrationScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Upload Birth Certificate (PDF)")
-                        Text("📎") // Using emoji instead of icon course the icons dont want to work  😢
+                        Text("📎")
                     }
                 }
 
@@ -250,7 +315,8 @@ fun TeamRegistrationScreen() {
                         contentColor = Color.Black
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
+                    enabled = !isLoading
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -258,12 +324,11 @@ fun TeamRegistrationScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Upload Passport Photo")
-                        Text("📷") // Using emoji instead of icon
+                        Text("📷")
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
 
                 Row(
                     modifier = Modifier
@@ -284,15 +349,27 @@ fun TeamRegistrationScreen() {
                             .size(24.dp)
                             .padding(end = 8.dp)
                     )
-
-
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-
                 Button(
-                    onClick = {  },
+                    onClick = {
+                        if (teamName.isNotBlank() && managerName.isNotBlank()) {
+                            // First, create the team
+                            teamViewModel.addTeam(teamName, managerName, contactNumber)
+
+                            // Note: In a real implementation, you'd need to get the team ID
+                            // after creation to associate players with the team
+                            // For now, we're just creating the team
+
+                            // Clear the form after successful submission
+                            teamName = ""
+                            managerName = ""
+                            contactNumber = ""
+                            players = listOf(PlayerData(1))
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -300,25 +377,34 @@ fun TeamRegistrationScreen() {
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     ),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(8.dp),
+                    enabled = !isLoading && teamName.isNotBlank() && managerName.isNotBlank()
                 ) {
-                    Text(
-                        "SUBMIT REGISTRATION",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp,
+                            color = Color.White
+                        )
+                    } else {
+                        Text(
+                            "SUBMIT REGISTRATION",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
-                  Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
 }
-//guys just increase the preview sizw if you cant see everything working
+
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun TeamRegistrationScreenPreview() {
     HockeyTheme {
-       TeamRegistrationScreen()
+        TeamRegistrationScreen()
     }
 }
