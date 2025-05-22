@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.auth
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.R
+import com.hockey.ui.screens.Main1Activity
+import com.hockey.ui.screens.auth.SignupActivity
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable

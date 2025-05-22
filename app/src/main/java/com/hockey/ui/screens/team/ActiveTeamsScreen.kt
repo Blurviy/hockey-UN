@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.team
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

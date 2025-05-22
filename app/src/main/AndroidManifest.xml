@@ -26,19 +26,19 @@
         </activity>
 
         <!-- TeamRegistrationActivity -->
-        <activity android:name=".ui.screens.TeamRegistrationActivity" />
+        <activity android:name=".ui.screens.team.TeamRegistrationActivity" />
 
         <!-- PlayerManagementActivity -->
-        <activity android:name=".ui.screens.PlayerManagementActivity" />
+        <activity android:name=".ui.screens.team.PlayerManagementActivity" />
 
         <!-- PlayerRegistrationActivity -->
-        <activity android:name=".ui.screens.PlayerRegistrationActivity" />
+        <activity android:name=".ui.screens.team.PlayerRegistrationActivity" />
 
         <!-- LoginActivity -->
         <activity android:name=".ui.screens.LoginActivity" />
 
         <!-- SignupActivity -->
-        <activity android:name=".ui.screens.SignupActivity" />
+        <activity android:name=".ui.screens.auth.SignupActivity" />
 
         <!-- com.hockey.ui.screens.Main1Activity -->
         <activity android:name=".ui.screens.Main1Activity" />

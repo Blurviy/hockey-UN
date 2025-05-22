@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.team
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
@@ -14,9 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.ui.theme.HockeyTheme
 import android.content.Context
-import com.hockey.ui.screens.PlayerManagementActivity
-import com.hockey.ui.screens.PlayerRegistrationActivity
-import com.hockey.ui.screens.TeamRegistrationActivity
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun TeamManagementScreen(context: Context) {
@@ -80,6 +78,6 @@ fun ActivityCard(title: String, onClick: () -> Unit) {
 @Composable
 fun TeamManagementScreenPreview() {
     HockeyTheme {
-        TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
+        TeamManagementScreen(context = LocalContext.current)
     }
 }

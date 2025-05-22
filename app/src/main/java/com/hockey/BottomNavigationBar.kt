@@ -21,14 +21,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hockey.ui.screens.EventScreen
+import com.hockey.ui.screens.events.EventScreen
 import com.hockey.ui.screens.HomeScreen
 import com.hockey.ui.screens.NewsAndUpdateScreen
 import com.hockey.ui.screens.SettingsScreen
-import com.hockey.ui.screens.TeamManagementScreen
+import com.hockey.ui.screens.team.TeamManagementScreen
 
 @Composable
 fun Main1Screen(modifier: Modifier= Modifier) {
@@ -124,7 +125,7 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     // Display the content of the selected screen using a `when` block
     when (selectedScreen) {
         0 -> HomeScreen()
-        1 -> TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
+        1 -> TeamManagementScreen(context = LocalContext.current)
         //1 -> TeamRegistrationScreen() moved
        // 2 -> PlayerManagementScreen()
         2 -> EventScreen()

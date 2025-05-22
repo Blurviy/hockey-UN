@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

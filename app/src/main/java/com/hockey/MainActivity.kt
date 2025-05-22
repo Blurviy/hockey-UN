@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.hockey.ui.screens.LoginScreen
+import com.hockey.ui.screens.auth.LoginScreen
 import com.hockey.ui.theme.HockeyTheme
 
 // DO NOT CHANGE ANYTHING HERE
