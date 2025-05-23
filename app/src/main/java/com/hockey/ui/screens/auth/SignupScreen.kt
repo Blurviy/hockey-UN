@@ -1,5 +1,6 @@
 package com.hockey.ui.screens.auth
 
+import android.R.attr.text
 import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,10 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.hockey.AppUtil
 import com.hockey.R
 import com.hockey.ui.screens.Main1Activity
 import com.hockey.ui.viewmodels.AuthViewModel
@@ -21,24 +25,18 @@ import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
 fun SignupScreen(
-    authViewModel: AuthViewModel = viewModel(),
-    onSignupSuccess: () -> Unit = {},
-    onBackToLogin: () -> Unit = {}
+    navController: NavController,authViewModel: AuthViewModel = viewModel(),
+
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var context= LocalContext.current
 
-    val uiState by authViewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
     // Handle successful signup
-    LaunchedEffect(uiState.isAuthenticated) {
-        if (uiState.isAuthenticated) {
-            onSignupSuccess()
-        }
-    }
+
 
     Column(
         modifier = Modifier
@@ -61,7 +59,7 @@ fun SignupScreen(
             onValueChange = { name = it },
             label = { Text("Full Name") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !uiState.isLoading
+
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -71,7 +69,7 @@ fun SignupScreen(
             onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !uiState.isLoading
+
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -82,7 +80,7 @@ fun SignupScreen(
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            enabled = !uiState.isLoading
+
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -93,7 +91,7 @@ fun SignupScreen(
             label = { Text("Confirm Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            enabled = !uiState.isLoading,
+
             isError = confirmPassword.isNotEmpty() && password != confirmPassword
         )
 
@@ -108,54 +106,44 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Error message
-        uiState.errorMessage?.let { error ->
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
 
         // Sign Up Button
         Button(
             onClick = {
-                if (name.isNotBlank() && email.isNotBlank() &&
-                    password.isNotBlank() && password == confirmPassword) {
-                    authViewModel.signUp(email, password, name)
+                authViewModel.signup(email, name, password){
+                        success,errorMessage->
+                    if(success){
+                        context.startActivity(Intent(context, Main1Activity::class.java))
+                        navController.navigate("home"){ // Assuming "home" is your route for the home screen
+                            popUpTo("auth"){inclusive=true}
+                        }
+                    }else{
+                        AppUtil.showToast(context , message = errorMessage?:"something went wrong")
+                    }
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-            enabled = !uiState.isLoading && name.isNotBlank() &&
-                    email.isNotBlank() && password.isNotBlank() &&
-                    password == confirmPassword
         ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = Color.White
-                )
-            } else {
-                Text("Sign Up")
-            }
+Text("signup", fontSize = 20.sp)
+
         }
         Spacer(modifier = Modifier.height(8.dp))
 
         // Back to Login Button
-        TextButton(
-            onClick = onBackToLogin,
-            enabled = !uiState.isLoading
-        ) {
-            Text("Already have an account? Login")
-        }
+//        TextButton(
+//            onClick = onBackToLogin,
+//
+//        ) {
+//            Text("Already have an account? Login")
+//        }
 
         Spacer(modifier = Modifier.height(8.dp))
         // Continue as Guest
         TextButton(
-            onClick = { context.startActivity(Intent(context, Main1Activity::class.java)) },
+            onClick = {  },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -166,5 +154,11 @@ fun SignupScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Continue to App", color = Color.Blue)
         }
-    }
+
+    }}
+
+@Preview(showBackground = true)
+@Composable
+fun SignupScreenPreview() {
+    SignupScreen(navController = NavController(LocalContext.current)) // Your current approach is also fine
 }

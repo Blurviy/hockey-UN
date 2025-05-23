@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1013203464097",
+    "firebase_url": "https://hockey-e762b-default-rtdb.firebaseio.com",
     "project_id": "hockey-e762b",
     "storage_bucket": "hockey-e762b.firebasestorage.app"
   },

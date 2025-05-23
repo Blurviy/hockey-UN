@@ -26,9 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hockey.ui.screens.events.EventScreen
-import com.hockey.ui.screens.HomeScreen
-import com.hockey.ui.screens.NewsAndUpdateScreen
-import com.hockey.ui.screens.SettingsScreen
+import com.hockey.ui.screens.home.HomeScreen
+import com.hockey.ui.screens.news.NewsAndUpdateScreen
+import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.TeamManagementScreen
 
 @Composable

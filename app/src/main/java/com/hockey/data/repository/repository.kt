@@ -5,9 +5,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.hockey.data.models.Player
-import com.hockey.data.models.Team
-import com.hockey.data.models.User
+import com.hockey.data.model.Player
+import com.hockey.data.model.Team
+import com.hockey.data.model.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

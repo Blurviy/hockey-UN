@@ -10,7 +10,7 @@ class SignupActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HockeyTheme {
-                SignupScreen()
+
             }
         }
     }

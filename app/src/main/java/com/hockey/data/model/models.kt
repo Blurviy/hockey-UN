@@ -1,6 +1,6 @@
 
 
-package com.hockey.data.models
+package com.hockey.data.model
 
 data class User(
     val id: String = "",

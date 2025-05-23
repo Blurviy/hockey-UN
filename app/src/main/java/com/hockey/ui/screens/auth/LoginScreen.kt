@@ -15,17 +15,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.hockey.AppUtil
 import com.hockey.R
+
 import com.hockey.ui.screens.Main1Activity
 import com.hockey.ui.screens.auth.SignupActivity
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(
-    onLoginClick: (String, String) -> Unit = { _, _ -> }, // Default empty lambda for preview
-    onRegisterClick: () -> Unit = {}, // Callback for registration
-    onForgotPasswordClick: () -> Unit = {} // Callback for password navigation navigation
-    ) {
+fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = viewModel(),
+   ) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -97,7 +99,18 @@ fun LoginScreen(
 
         // Login Button
         Button(
-            onClick = { onLoginClick(email, password) },
+            onClick = {
+                authViewModel.login(email, password){
+                        success,errorMessage ->
+                    if(success){
+                    context.startActivity(Intent(context, Main1Activity::class.java))
+                    navController.navigate("home")
+                }else{
+                    AppUtil.showToast(context , message = errorMessage?:"something went wrong")
+                }
+                }
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -165,6 +178,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen()
+        LoginScreen(NavController(LocalContext.current))
     }
 }
