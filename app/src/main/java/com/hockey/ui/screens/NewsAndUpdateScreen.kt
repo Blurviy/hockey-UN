@@ -197,7 +197,7 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
         //elevation = 4.dp
     ) {
 
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
             Image(
                 painter = painterResource(id = news.imageRes),
                 contentDescription = news.title,
@@ -205,12 +205,16 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     .fillMaxWidth()
                     .size(60.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.time, style = MaterialTheme.typography.bodySmall)
+            Column(modifier = Modifier
+                .padding(7.dp)
+                .align(alignment = Alignment.CenterVertically)
+            ) {
+                Text(text = news.title, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = news.description, style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = news.time, style = MaterialTheme.typography.bodySmall) }
+
         }
     }
 }
