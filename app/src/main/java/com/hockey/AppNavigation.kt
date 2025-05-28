@@ -12,23 +12,18 @@ import com.hockey.ui.screens.auth.SignupScreen
 import com.hockey.ui.screens.home.HomeScreen
 
 @Composable
-fun AppNavigation(modifier: Modifier){
-
+fun AppNavigation(modifier: Modifier) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "auth")
-    {
-
-        composable("login"){
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
             LoginScreen(navController)
         }
-        composable("signup"){
-           SignupScreen(navController)
+        composable("signup") {
+            SignupScreen(navController)
         }
-        composable("home"){
+        composable("home") {
             HomeScreen()
         }
-
-
     }
 }
 
