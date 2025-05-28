@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.hockey.AppUtil
+import com.hockey.utils.AppUtil
 import com.hockey.R
 
 import com.hockey.ui.screens.Main1Activity

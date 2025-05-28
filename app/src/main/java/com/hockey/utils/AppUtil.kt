@@ -1,4 +1,4 @@
-package com.hockey
+package com.hockey.utils
 
 import android.content.Context
 import android.widget.Toast

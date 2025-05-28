@@ -1,4 +1,4 @@
-package com.hockey
+package com.hockey.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hockey.R
 import com.hockey.ui.screens.events.EventScreen
 import com.hockey.ui.screens.home.HomeScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
@@ -133,6 +134,26 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
         4-> SettingsScreen()
     }
 
+}
+
+@Composable
+fun ManagerHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+    Main1Screen(userRole = UserRole.MANAGER, navController = navController, authViewModel = authViewModel)
+}
+
+@Composable
+fun PlayerHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+    Main1Screen(userRole = UserRole.PLAYER, navController = navController, authViewModel = authViewModel)
+}
+
+@Composable
+fun AdminHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+    Main1Screen(userRole = UserRole.ADMIN, navController = navController, authViewModel = authViewModel)
+}
+
+@Composable
+fun FanHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+    Main1Screen(userRole = UserRole.FAN, navController = navController, authViewModel = authViewModel)
 }
 
 // Data class representing a navigation bar item

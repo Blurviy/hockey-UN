@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.hockey.ui.screens.auth.LoginScreen
+import com.hockey.ui.navigation.AppNavigation
+import com.hockey.ui.navigation.Main1Screen
 import com.hockey.ui.theme.HockeyTheme
 
 // DO NOT CHANGE ANYTHING HERE
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Enables full-screen usage
         setContent {
             AppNavigation(modifier = Modifier.fillMaxSize())
         }
