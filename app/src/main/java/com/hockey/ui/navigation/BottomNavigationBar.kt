@@ -136,26 +136,6 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
 
 }
 
-@Composable
-fun ManagerHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
-    Main1Screen(userRole = UserRole.MANAGER, navController = navController, authViewModel = authViewModel)
-}
-
-@Composable
-fun PlayerHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
-    Main1Screen(userRole = UserRole.PLAYER, navController = navController, authViewModel = authViewModel)
-}
-
-@Composable
-fun AdminHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
-    Main1Screen(userRole = UserRole.ADMIN, navController = navController, authViewModel = authViewModel)
-}
-
-@Composable
-fun FanHomeScreen(navController: NavHostController, authViewModel: AuthViewModel) {
-    Main1Screen(userRole = UserRole.FAN, navController = navController, authViewModel = authViewModel)
-}
-
 // Data class representing a navigation bar item
 data class NavBarItem (
     val label: String,

@@ -15,41 +15,13 @@ fun AppNavigation(modifier: Modifier) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
-            LoginScreen(navController)
+            LoginScreen()
         }
         composable("signup") {
             SignupScreen(navController)
         }
         composable("home") {
             HomeScreen()
-        }
-        composable("manager_home") {
-            ManagerHomeScreen(navController, authViewModel)
-        }
-        composable("player_home") {
-            PlayerHomeScreen(navController, authViewModel)
-        }
-        composable("admin_home") {
-            AdminHomeScreen(navController, authViewModel)
-        }
-        composable("fan_home") {
-            FanHomeScreen(navController, authViewModel)
-        }
-        composable("event_details/{eventId}") { backStackEntry ->
-            val eventId = backStackEntry.arguments?.getString("eventId")
-            EventDetailsScreen(eventId)
-        }
-        composable("active_teams") {
-            ActiveTeamsScreen()
-        }
-        composable("add_update") {
-            AddUpdateScreen()
-        }
-        composable("add_event") {
-            AddEventScreen()
-        }
-        composable("direct_messages") {
-            DirectMessagesScreen()
         }
     }
 }

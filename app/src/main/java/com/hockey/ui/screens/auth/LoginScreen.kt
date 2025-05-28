@@ -15,19 +15,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.hockey.utils.AppUtil
 import com.hockey.R
-
 import com.hockey.ui.screens.Main1Activity
 import com.hockey.ui.screens.auth.SignupActivity
 import com.hockey.ui.theme.HockeyTheme
-import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = viewModel(),
-   ) {
+fun LoginScreen() {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -51,8 +45,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         Text(
             text = "Sports Event Manager",
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -60,8 +53,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         Text(
             text = "Manage your sports events efficiently",
             fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            style = MaterialTheme.typography.headlineMedium
+            fontWeight = FontWeight.Normal
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,7 +65,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_email),
-                    contentDescription = "Email Icons",
+                    contentDescription = "Email Icon",
                     modifier = Modifier.size(24.dp)
                 )
             },
@@ -100,16 +92,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         // Login Button
         Button(
             onClick = {
-                authViewModel.login(email, password){
-                        success,errorMessage ->
-                    if(success){
-                    context.startActivity(Intent(context, Main1Activity::class.java))
-                    navController.navigate("home")
-                }else{
-                    AppUtil.showToast(context , message = errorMessage?:"something went wrong")
-                }
-                }
-
+                context.startActivity(Intent(context, Main1Activity::class.java))
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -148,7 +131,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         TextButton(
             onClick = { /* Handle forgot password */ },
             modifier = Modifier.fillMaxWidth()
-            ) {
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_lock_reset),
                 contentDescription = "Forgot Password Icon",
@@ -165,7 +148,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_person_add),
-                contentDescription = "Home icon",
+                contentDescription = "Home Icon",
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -178,6 +161,6 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen(NavController(LocalContext.current))
+        LoginScreen()
     }
 }

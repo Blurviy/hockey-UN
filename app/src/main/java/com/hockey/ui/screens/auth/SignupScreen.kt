@@ -20,14 +20,14 @@ import androidx.navigation.NavController
 import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.ui.screens.Main1Activity
-import com.hockey.ui.viewmodels.AuthViewModel
+
 // import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 @Composable
 fun SignupScreen(
-    navController: NavController,authViewModel: AuthViewModel = viewModel(),
+    navController: NavController,
 
-) {
+    ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -60,7 +60,7 @@ fun SignupScreen(
             label = { Text("Full Name") },
             modifier = Modifier.fillMaxWidth(),
 
-        )
+            )
         Spacer(modifier = Modifier.height(16.dp))
 
         // Email Input
@@ -70,7 +70,7 @@ fun SignupScreen(
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
 
-        )
+            )
         Spacer(modifier = Modifier.height(16.dp))
 
         // Password Input
@@ -81,7 +81,7 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
 
-        )
+            )
         Spacer(modifier = Modifier.height(16.dp))
 
         // Confirm Password Input
@@ -110,16 +110,12 @@ fun SignupScreen(
         // Sign Up Button
         Button(
             onClick = {
-                authViewModel.signup(email, name, password){
-                        success,errorMessage->
-                    if(success){
+
                         context.startActivity(Intent(context, Main1Activity::class.java))
                         navController.navigate("home"){ // Assuming "home" is your route for the home screen
                             popUpTo("auth"){inclusive=true}
-                        }
-                    }else{
-                        AppUtil.showToast(context , message = errorMessage?:"something went wrong")
-                    }
+
+
                 }
             },
             modifier = Modifier
@@ -127,7 +123,7 @@ fun SignupScreen(
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
         ) {
-Text("signup", fontSize = 20.sp)
+            Text("signup", fontSize = 20.sp)
 
         }
         Spacer(modifier = Modifier.height(8.dp))

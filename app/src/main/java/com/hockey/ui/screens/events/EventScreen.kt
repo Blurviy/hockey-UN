@@ -3,6 +3,7 @@ package com.hockey.ui.screens.events
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -63,36 +66,31 @@ val events = listOf(
 
 @Composable
 fun EventScreen(
-
     onEventClick: (Event) -> Unit = {}, // Default empty lambda for preview
     onRegisterTeamClick: (Event) -> Unit = {},
-    onAddEventClick: (Event) -> Unit = {} /**TODO add an event creation screen**/
+    onAddEventClick: (Event) -> Unit = {}
 ) {
-    var selectedEvent by remember { mutableStateOf<Event?>(null) } // Explicitly allow null values
+    var selectedEvent by remember { mutableStateOf<Event?>(null) }
     var showRegistrationScreen by remember { mutableStateOf(false) }
+    var filter by remember { mutableStateOf("All") } // State to track selected filter
 
     if (showRegistrationScreen && selectedEvent != null) {
-        // Show the registration screen when an event is selected
         EventRegistrationScreen(
             event = selectedEvent!!,
             onConfirmRegistration = { teamName ->
-                // Handle registration confirmation
-                showRegistrationScreen = false // Return to event list after confirmation
+                showRegistrationScreen = false
             },
             onCancelRegistration = {
-                // Handle cancellation
-                showRegistrationScreen = false // Return to event list
+                showRegistrationScreen = false
             }
         )
     } else {
-        // SHow the Event List
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Header with title and filter icon
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -101,19 +99,16 @@ fun EventScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Event Entries",
+                    text = "Event Entries ($filter)", // Display the selected filter
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.headlineMedium
                 )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable { /* Handle filter click */ }
-                )
+                // Integrate Dropdown
+                EventScreenDropDown { selectedFilter ->
+                    filter = selectedFilter // Update the filter state
+                }
             }
 
             LazyColumn(
@@ -126,8 +121,8 @@ fun EventScreen(
                         event = event,
                         onClick = { onEventClick(event) },
                         onRegisterTeamClick = {
-                            selectedEvent = event // sets the current selected event
-                            showRegistrationScreen = true // Navigate to Evernt registration
+                            selectedEvent = event
+                            showRegistrationScreen = true
                         }
                     )
                 }
@@ -137,7 +132,58 @@ fun EventScreen(
 }
 
 @Composable
-private fun function(): (Event) -> Unit = {}
+fun EventScreenDropDown(
+    onFilterSelected: (String) -> Unit = {} // Callback for selected filter
+) {
+    var expanded by remember { mutableStateOf(false) } // State to control the visibility of the drop-down menu
+
+    val menuItems = listOf(
+        "Unread" to Icons.Default.Message,
+        "Favorites" to Icons.Default.Favorite,
+        "Groups" to Icons.Default.Group,
+        "Drafts" to Icons.Default.Message
+    )
+
+    Box {
+        // Filter Icon
+        Icon(
+            painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
+            contentDescription = "Filter",
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { expanded = true } // Show the dropdown when clicked
+        )
+
+        // Dropdown Menu
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false } // Close dropdown when clicked outside
+        ) {
+            menuItems.forEach { (label, icon) ->
+                DropdownMenuItem(
+                    onClick = {
+                        onFilterSelected(label) // Callback with the selected filter
+                        expanded = false // Close the dropdown
+                    },
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = label)
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun EventCard(
@@ -157,7 +203,6 @@ fun EventCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Event title and status row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -183,10 +228,9 @@ fun EventCard(
                 }
             }
 
-            // Date row
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_calendar_today), // Replace with actual calendar icon resource
+                    painter = painterResource(id = R.drawable.ic_calendar_today),
                     contentDescription = "Date",
                     modifier = Modifier.size(16.dp),
                     tint = Color.Gray
@@ -199,10 +243,9 @@ fun EventCard(
                 )
             }
 
-            // Location row
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_location), // Replace with actual location icon resource
+                    painter = painterResource(id = R.drawable.ic_location),
                     contentDescription = "Location",
                     modifier = Modifier.size(16.dp),
                     tint = Color.Gray
@@ -215,11 +258,10 @@ fun EventCard(
                 )
             }
 
-            // Team count row (if active)
             if (event.teamCount != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_groups), // Replace with actual teams icon resource
+                        painter = painterResource(id = R.drawable.ic_groups),
                         contentDescription = "Teams",
                         modifier = Modifier.size(16.dp),
                         tint = Color.Gray
@@ -233,7 +275,6 @@ fun EventCard(
                 }
             }
 
-            // Register Team button
             Button(
                 onClick = onRegisterTeamClick,
                 modifier = Modifier
@@ -242,7 +283,7 @@ fun EventCard(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_add), // Replace with actual register icon resource
+                    painter = painterResource(id = R.drawable.ic_add),
                     contentDescription = "Register Icon",
                     modifier = Modifier.size(24.dp)
                 )
@@ -250,30 +291,6 @@ fun EventCard(
                 Text("REGISTER TEAM")
             }
         }
-    }
-}
-
-@Composable
-fun EventScreenDropDown(){
-    var expanded by remember { mutableStateOf(false) } // State to control the visibility of the drop down menu
-
-    val menuItems = listOf (
-        "Unread" to Icons.Default.Message,
-        "Favorites" to Icons.Default.Favorite,
-        "Contacts" to Icons.Default.Person,
-        "Non-contacts" to Icons.Default.Person,
-        "Groups" to Icons.Default.Group,
-        "Drafts" to Icons.Default.Message
-    )
-
-    /**TODO Implementation of code for the drop down**/
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EventScreenDropDownPreview() {
-    HockeyTheme {
-        EventScreenDropDown()
     }
 }
 
