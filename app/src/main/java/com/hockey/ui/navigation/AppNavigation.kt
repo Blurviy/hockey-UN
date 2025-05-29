@@ -14,25 +14,26 @@ import com.hockey.ui.screens.home.HomeScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.TeamManagementScreen
+import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
-fun AppNavigation(modifier: Modifier) {
+fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "login", builder = {
         composable("login") {
-            LoginScreen()
+            LoginScreen(modifier, navController, authViewModel)
         }
         composable("signup") {
-            SignupScreen(navController)
+            SignupScreen(modifier, navController, authViewModel)
         }
         composable("home") {
-            HomeScreen()
+            HomeScreen(modifier, navController, authViewModel)
         }
         composable("events") { EventScreen() }
         composable("team") { TeamManagementScreen(LocalContext.current) }
         composable("updates") { NewsAndUpdateScreen() }
         composable("settings") { SettingsScreen() }
-    }
+    })
 }
 
 

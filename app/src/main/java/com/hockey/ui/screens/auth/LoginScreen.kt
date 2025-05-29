@@ -15,13 +15,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.screens.Main1Activity
-import com.hockey.ui.screens.auth.SignupActivity
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -35,9 +37,9 @@ fun LoginScreen() {
     ) {
         // Icon
         Image(
-            painter = painterResource(id = R.drawable.ic_trophy),
+            painter = painterResource(id = R.drawable.nhu_logo),
             contentDescription = "Trophy Icon",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(240.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -92,7 +94,7 @@ fun LoginScreen() {
         // Login Button
         Button(
             onClick = {
-                context.startActivity(Intent(context, Main1Activity::class.java))
+
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -110,8 +112,8 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Register Button
-        Button(
-            onClick = { context.startActivity(Intent(context, SignupActivity::class.java)) },
+        TextButton(
+            onClick = { navController.navigate("signup") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -143,7 +145,7 @@ fun LoginScreen() {
 
         // Continue as Guest
         TextButton(
-            onClick = { context.startActivity(Intent(context, Main1Activity::class.java)) },
+            onClick = { navController.navigate("home") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -161,6 +163,6 @@ fun LoginScreen() {
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen()
+         LoginScreen(navController = NavController(LocalContext.current), authViewModel = viewModel())
     }
 }

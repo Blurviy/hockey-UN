@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.R
 import com.hockey.ui.screens.events.EventScreen
 import com.hockey.ui.screens.home.HomeScreen
@@ -118,21 +120,21 @@ fun Main1Screen(modifier: Modifier= Modifier) {
         }
     ) { innerPadding ->
         // Render the content of the selected screen
-        ContentScreen(modifier = Modifier.padding(innerPadding), selectedScreen)
+        ContentScreen(modifier = Modifier.padding(innerPadding), selectedScreen, navController = rememberNavController())
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
+fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int, navController: NavController) {
     // Display the content of the selected screen using a `when` block
     when (selectedScreen) {
-        0 -> HomeScreen()
-        1 -> TeamManagementScreen(context = LocalContext.current)
+        0 -> navController.navigate("home")
+        1 -> navController.navigate("team")
         //1 -> TeamRegistrationScreen() moved
        // 2 -> PlayerManagementScreen()
-        2 -> EventScreen()
-        3 -> NewsAndUpdateScreen()
-        4-> SettingsScreen()
+        2 -> navController.navigate("events")
+        3 -> navController.navigate("updates")
+        4-> navController.navigate("settings")
     }
 
 }

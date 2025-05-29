@@ -2,6 +2,7 @@ package com.hockey.ui.screens.auth
 
 import android.R.attr.text
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,13 +21,15 @@ import androidx.navigation.NavController
 import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.ui.screens.Main1Activity
+import com.hockey.ui.viewmodels.AuthViewModel
 
 // import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 @Composable
 fun SignupScreen(
+    modifier: Modifier = Modifier,
     navController: NavController,
-
+    authViewModel: AuthViewModel
     ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -45,13 +48,29 @@ fun SignupScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Create Account",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
+        // Icon
+        Image(
+            painter = painterResource(id = R.drawable.nhu_logo),
+            contentDescription = "Trophy Icon",
+            modifier = Modifier.size(240.dp)
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // App title
+        Text(
+            text = "Sports Event Manager",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Tagline
+        Text(
+            text = "Manage your sports events efficiently",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Name Input
         OutlinedTextField(
@@ -156,5 +175,6 @@ fun SignupScreen(
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(navController = NavController(LocalContext.current)) // Your current approach is also fine
+    SignupScreen(navController = NavController(LocalContext.current),
+        authViewModel = viewModel()) // Your current approach is also fine
 }

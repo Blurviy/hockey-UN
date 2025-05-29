@@ -32,17 +32,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.hockey.ui.screens.events.EventScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodels.AuthViewModel
 
 // Data classes to represent QuickStats and Activities
 data class QuickStat(val title: String, val value: String, val icon: ImageVector, val onClick: () -> Unit)
 data class Activity(val title: String, val description: String, val time: String) // Activity updates
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier){
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel){
     // State to track the current screen to display
     var selectedScreen by remember { mutableStateOf("home") }
 
@@ -191,6 +193,6 @@ fun ActivityCard(title: String, description: String, time: String) {
 @Composable
 fun HomeScreenPreview(){
     HockeyTheme {
-        HomeScreen()
+        // HomeScreen()
     }
 }
