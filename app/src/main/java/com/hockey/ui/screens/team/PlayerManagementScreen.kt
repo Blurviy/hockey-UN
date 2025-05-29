@@ -1,8 +1,8 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.team
 
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,7 +37,6 @@ val athletes = listOf(
     Athlete(2, "Sarah Johnson", "Midfielder", "15 Assists", R.drawable.sarah_johnson),
     Athlete(3, "Mike Wilson", "Defender", "5 Clean Sheets", R.drawable.mike_wilson)
 )
-
 
 @Composable
 fun PlayerManagementScreen(
@@ -76,7 +75,7 @@ fun PlayerManagementScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
             Button(
-                onClick = onAddAthleteClick,
+                onClick = { context.startActivity(Intent(context, PlayerRegistrationActivity::class.java)) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier.height(36.dp)
             ) {

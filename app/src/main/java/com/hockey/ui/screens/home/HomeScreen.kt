@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -32,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hockey.ui.screens.events.EventScreen
+import com.hockey.ui.screens.team.ActiveTeamsScreen
+import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.theme.HockeyTheme
 
 // Data classes to represent QuickStats and Activities

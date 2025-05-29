@@ -1,4 +1,4 @@
-package com.hockey
+package com.hockey.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -7,9 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -23,19 +21,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hockey.ui.screens.EventScreen
-import com.hockey.ui.screens.HomeScreen
-import com.hockey.ui.screens.NewsAndUpdateScreen
-import com.hockey.ui.screens.PlayerManagementScreen
-import com.hockey.ui.screens.SettingsScreen
-import com.hockey.ui.screens.TeamManagementScreen
+import com.hockey.R
+import com.hockey.ui.screens.events.EventScreen
+import com.hockey.ui.screens.home.HomeScreen
+import com.hockey.ui.screens.news.NewsAndUpdateScreen
+import com.hockey.ui.screens.settings.SettingsScreen
+import com.hockey.ui.screens.team.TeamManagementScreen
 
 @Composable
-fun MainScreen(modifier: Modifier= Modifier) {
+fun Main1Screen(modifier: Modifier= Modifier) {
 
     // List of navigation bar items with labels, icons, and badge counts
     val navBarItemList = listOf(
@@ -128,7 +126,7 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     // Display the content of the selected screen using a `when` block
     when (selectedScreen) {
         0 -> HomeScreen()
-        1 -> TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
+        1 -> TeamManagementScreen(context = LocalContext.current)
         //1 -> TeamRegistrationScreen() moved
        // 2 -> PlayerManagementScreen()
         2 -> EventScreen()
@@ -148,5 +146,5 @@ data class NavBarItem (
 @Preview
 @Composable
 fun MainScreenPreview(){
-    MainScreen()
+    Main1Screen()
 }
