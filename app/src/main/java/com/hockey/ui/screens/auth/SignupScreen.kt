@@ -129,13 +129,7 @@ fun SignupScreen(
         // Sign Up Button
         Button(
             onClick = {
-
-                        context.startActivity(Intent(context, Main1Activity::class.java))
-                        navController.navigate("home"){ // Assuming "home" is your route for the home screen
-                            popUpTo("auth"){inclusive=true}
-
-
-                }
+                navController.navigate("home")
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,13 +141,19 @@ fun SignupScreen(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Back to Login Button
-//        TextButton(
-//            onClick = onBackToLogin,
-//
-//        ) {
-//            Text("Already have an account? Login")
-//        }
+        // Forgot Password
+        TextButton(
+            onClick = { navController.navigate("login") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_login),
+                contentDescription = "Login Icon",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Already have an account?", color = Color.Blue)
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
         // Continue as Guest
