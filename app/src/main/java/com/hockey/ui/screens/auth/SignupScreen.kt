@@ -37,6 +37,9 @@ fun SignupScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var context= LocalContext.current
 
+    // Database connection
+    val authState = authViewModel.authState.observeAsState()
+
 
     // Handle successful signup
 
