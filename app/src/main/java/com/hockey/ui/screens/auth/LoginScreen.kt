@@ -1,6 +1,6 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.auth
 
-import android.provider.CalendarContract.Colors
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,24 +8,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodels.AuthViewModel
+
+// import com.hockey.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(
-    onLoginClick: (String, String) -> Unit = { _, _ -> }, // Default empty lambda for preview
-    onRegisterClick: () -> Unit = {}, // Callback for registration
-    onForgotPasswordClick: () -> Unit = {} // Callback for password navigation navigation
-    ) {
+fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -36,9 +38,9 @@ fun LoginScreen(
     ) {
         // Icon
         Image(
-            painter = painterResource(id = R.drawable.ic_trophy),
+            painter = painterResource(id = R.drawable.nhu_logo),
             contentDescription = "Trophy Icon",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(240.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -46,8 +48,7 @@ fun LoginScreen(
         Text(
             text = "Sports Event Manager",
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -55,8 +56,7 @@ fun LoginScreen(
         Text(
             text = "Manage your sports events efficiently",
             fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            style = MaterialTheme.typography.headlineMedium
+            fontWeight = FontWeight.Normal
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -68,7 +68,7 @@ fun LoginScreen(
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_email),
-                    contentDescription = "Email Icons",
+                    contentDescription = "Email Icon",
                     modifier = Modifier.size(24.dp)
                 )
             },
@@ -94,7 +94,9 @@ fun LoginScreen(
 
         // Login Button
         Button(
-            onClick = { onLoginClick(email, password) },
+            onClick = {
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -111,8 +113,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Register Button
-        Button(
-            onClick = onRegisterClick,
+        TextButton(
+            onClick = { navController.navigate("signup") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -132,7 +134,7 @@ fun LoginScreen(
         TextButton(
             onClick = { /* Handle forgot password */ },
             modifier = Modifier.fillMaxWidth()
-            ) {
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_lock_reset),
                 contentDescription = "Forgot Password Icon",
@@ -141,6 +143,20 @@ fun LoginScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Forgot Password?", color = Color.Blue)
         }
+
+        // Continue as Guest
+        TextButton(
+            onClick = { navController.navigate("home") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_person_add),
+                contentDescription = "Home Icon",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Continue to App", color = Color.Blue)
+        }
     }
 }
 
@@ -148,6 +164,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen()
+        LoginScreen(navController = NavController(LocalContext.current), authViewModel = AuthViewModel())
     }
 }

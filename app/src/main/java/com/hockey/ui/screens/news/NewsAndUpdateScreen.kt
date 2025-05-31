@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.news
 
 import android.content.Intent
 import android.webkit.WebView

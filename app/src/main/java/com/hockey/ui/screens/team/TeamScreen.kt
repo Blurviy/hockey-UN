@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.team
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
@@ -14,12 +14,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.ui.theme.HockeyTheme
 import android.content.Context
-import com.hockey.ui.screens.PlayerManagementActivity
-import com.hockey.ui.screens.PlayerRegistrationActivity
-import com.hockey.ui.screens.TeamRegistrationActivity
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 
 @Composable
-fun TeamManagementScreen(context: Context) {
+fun TeamManagementScreen(modifier: Modifier = Modifier, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,13 +34,13 @@ fun TeamManagementScreen(context: Context) {
 
         // Cards for navigation
         ActivityCard("Player Management") {
-            context.startActivity(Intent(context, PlayerManagementActivity::class.java))
+            navController.navigate("playerManagement")
         }
         ActivityCard("Player Registration") {
-            context.startActivity(Intent(context, PlayerRegistrationActivity::class.java))
+            navController.navigate("playerRegistration")
         }
         ActivityCard("Team Registration") {
-            context.startActivity(Intent(context, TeamRegistrationActivity::class.java))
+            navController.navigate("teamRegistration")
         }
     }
 }
@@ -80,6 +79,6 @@ fun ActivityCard(title: String, onClick: () -> Unit) {
 @Composable
 fun TeamManagementScreenPreview() {
     HockeyTheme {
-        TeamManagementScreen(context = androidx.compose.ui.platform.LocalContext.current)
+        TeamManagementScreen(navController = NavController(LocalContext.current))
     }
 }
