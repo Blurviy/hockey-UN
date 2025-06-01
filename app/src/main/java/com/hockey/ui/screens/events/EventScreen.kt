@@ -17,14 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -40,12 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.utils.AppDropDown
 
@@ -54,6 +50,7 @@ data class Event(
     val id: Int,
     val title: String,
     val date: String,
+    val time: String,
     val location: String,
     val teamCount: Int? = null,
     val isActive: Boolean = false
@@ -61,10 +58,10 @@ data class Event(
 
 // Sample events list
 val events = listOf(
-    Event(1, "Hockey Match: Team A vs Team B", "March 15, 2025", "Main Arena"),
-    Event(2, "Training Camp", "March 20, 2025", "Training Center"),
-    Event(3, "Fan Meet & Greet", "March 25, 2025", "Community Hall"),
-    Event(4, "Championship Final", "April 1, 2025", "National Stadium")
+    Event(1, "Hockey Match: Team A vs Team B", "March 15, 2025", "5:00 PM", "Main Arena"),
+    Event(2, "Training Camp", "March 20, 2025", "8:00 AM", "Training Center"),
+    Event(3, "Fan Meet & Greet", "March 25, 2025", "7:00 PM", "Community Hall"),
+    Event(4, "Championship Final", "April 1, 2025", "8:00 AM","National Stadium")
 )
 
 @Composable
@@ -294,25 +291,58 @@ fun EventDetailsScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
+        // Title
         Text(
             text = event.title,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
-        Text(text = "Date: ${event.date}")
-        Text(text = "Location: ${event.location}")
-        if (event.teamCount != null) {
-            Text(text = "Teams Registered: ${event.teamCount}")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Date and Time
+        Text(
+            text = "Date & Time: ${event.date} | ${event.time}",
+            color = Color.Gray,
+            fontSize = 16.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Location
+        Text(
+            text = "Location: ${event.location}",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        // Teams Registered (if available)
+        event.teamCount?.let {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Teams Registered: $it",
+                fontSize = 16.sp
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         // Back Button
-        Button(onClick = onBackClick) {
-            Text("Back")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = onBackClick) {
+                Text("Back")
+            }
         }
     }
 }
+
 
 
 
@@ -324,7 +354,7 @@ fun EventScreenPreview() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun EventDetailsScreenPreview() {
     HockeyTheme {
@@ -333,6 +363,7 @@ fun EventDetailsScreenPreview() {
                 id = 1,
                 title = "Hockey Match: Team A vs Team B",
                 date = "March 15, 2025",
+                time = "5:00 PM",
                 location = "Main Arena"),
             userRole = "manager",
             onBackClick = {}
