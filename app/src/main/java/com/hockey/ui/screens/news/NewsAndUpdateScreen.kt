@@ -29,6 +29,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+
+import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Archive
+
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.utils.AppDropDown
 
 data class News(
     val title: String,
@@ -108,8 +114,11 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
     var currentUrl by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    // Wrap everything in a Column to structure the screen
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp) // Add padding for overall layout
+    ) {
         if (showWebView) {
             // Back button for WebView
             IconButton(
@@ -124,23 +133,43 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
             // WebView display
             WebViewScreen(url = currentUrl)
         } else {
-            // News list with Back button
-            IconButton(
-                onClick = {
-                    (context as? ComponentActivity)?.finish()
-                },
+            // News list with Back button and DropDown
+            Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.Start)
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp), // Vertical padding to separate from the list
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                IconButton(
+                    onClick = { (context as? ComponentActivity)?.finish() },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+
+                // DropDown
+                AppDropDown(
+                    menuItems = listOf(
+                        Triple("Recent", Icons.Default.Update) {
+                            // Handle navigation for recent news
+                        },
+                        Triple("Popular", Icons.Default.ThumbUp) {
+                            // Handle navigation for popular news
+                        },
+                        Triple("Archived", Icons.Default.Archive) {
+                            // Handle navigation for archived news
+                        }
+                    )
+                )
             }
 
-
             // Show the News List
-            LazyColumn(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = 100.dp)) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp) // Add padding to separate from the header
+            ) {
                 items(newsList) { news ->
                     NewsCard(news) {
                         if (news.link != null) {
@@ -161,6 +190,7 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
         }
     }
 }
+
 
 @Composable
 fun WebViewScreen(url: String) {
@@ -193,27 +223,50 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     onClick()
                 }
             },
-        shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp
+        shape = RoundedCornerShape(8.dp)
     ) {
-
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
             Image(
                 painter = painterResource(id = news.imageRes),
                 contentDescription = news.title,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(60.dp)
+                    .size(80.dp)
+                    .align(Alignment.CenterVertically)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.time, style = MaterialTheme.typography.bodySmall)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = news.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = news.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 2
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = news.time,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
+
 
 
 @Composable

@@ -21,11 +21,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.R
 import com.hockey.ui.screens.events.EventScreen
 import com.hockey.ui.screens.home.HomeScreen
@@ -34,28 +34,37 @@ import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.TeamManagementScreen
 
 @Composable
-fun NavigationBar(role: String, modifier: Modifier = Modifier) {
+fun NavigationBar(
+    role: String,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     // Define role-based navigation items
     val navBarItemList = when (role) {
         "noLogin" -> listOf(
             NavBarItem("Home", { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") }, 0),
-            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0),
+            NavBarItem("Events", { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") }, 0),
+            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0)
         )
         "manager" -> listOf(
             NavBarItem("Home", { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") }, 0),
             NavBarItem("Team", { Icon(painterResource(id = R.drawable.ic_groups), contentDescription = "Team Icon", Modifier.size(24.dp)) }, 0),
             NavBarItem("Events", { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") }, 0),
+            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0),
             NavBarItem("Settings", { Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") }, 0)
         )
         "fan" -> listOf(
             NavBarItem("Home", { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") }, 0),
             NavBarItem("Events", { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") }, 0),
-            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0)
+            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0),
+            NavBarItem("Settings", { Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") }, 0)
         )
         "player" -> listOf(
             NavBarItem("Home", { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") }, 0),
             NavBarItem("Team", { Icon(painterResource(id = R.drawable.ic_groups), contentDescription = "Team Icon", Modifier.size(24.dp)) }, 0),
-            NavBarItem("Events", { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") }, 0)
+            NavBarItem("Events", { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Events Icon") }, 0),
+            NavBarItem("Updates", { Icon(imageVector = Icons.Default.Notifications, contentDescription = "Updates Icon") }, 0),
+            NavBarItem("Settings", { Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") }, 0)
         )
         "admin" -> listOf(
             NavBarItem("Home", { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Icon") }, 0),
@@ -67,7 +76,7 @@ fun NavigationBar(role: String, modifier: Modifier = Modifier) {
         else -> emptyList() // Handle unknown roles
     }
 
-    // State to track the currently selected screen
+    // Track which tab is currently selected
     var selectedScreen by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -94,37 +103,93 @@ fun NavigationBar(role: String, modifier: Modifier = Modifier) {
             }
         }
     ) { innerPadding ->
-        ContentScreen(modifier = Modifier.padding(innerPadding), selectedScreen, role)
+        // Pass the same NavController into ContentScreen
+        ContentScreen(
+            modifier = Modifier.padding(innerPadding),
+            selectedScreen = selectedScreen,
+            userRole = role,
+            navController = navController
+        )
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int, role: String) {
-    when (role) {
+fun ContentScreen(
+    modifier: Modifier = Modifier,
+    selectedScreen: Int,
+    userRole: String,
+    navController: NavController
+) {
+    when (userRole) {
         "noLogin" -> when (selectedScreen) {
-            0 -> HomeScreen()
-            1 -> NewsAndUpdateScreen()
-        }
-        "manager" -> when (selectedScreen) {
-            0 -> HomeScreen()
-            1 -> TeamManagementScreen(navController = NavController(LocalContext.current))
-            2 -> EventScreen()
-            3 -> SettingsScreen()
-        }
-        "fan" -> when (selectedScreen) {
-            0 -> HomeScreen()
-            1 -> EventScreen()
+            0 -> HomeScreen(navController)
+            1 -> EventScreen(
+                userRole = "noLogin",
+                onEventClick = { event ->
+                    // Navigate to the details route for this event
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = {}, // No registration for noLogin
+                onAddEventClick = {}
+            )
             2 -> NewsAndUpdateScreen()
         }
+        "manager" -> when (selectedScreen) {
+            0 -> HomeScreen(navController)
+            1 -> TeamManagementScreen(navController = rememberNavController())
+            2 -> EventScreen(
+                userRole = "manager",
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = { event ->
+                    /* manager team registration logic—e.g., open a dialog */
+                },
+                onAddEventClick = {}
+            )
+            3 -> NewsAndUpdateScreen()
+            4 -> SettingsScreen()
+        }
+        "fan" -> when (selectedScreen) {
+            0 -> HomeScreen(navController)
+            1 -> EventScreen(
+                userRole = "fan",
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = {}, // fans can’t register
+                onAddEventClick = {}
+            )
+            2 -> NewsAndUpdateScreen()
+            3 -> SettingsScreen()
+        }
         "player" -> when (selectedScreen) {
-            0 -> HomeScreen()
-            1 -> TeamManagementScreen(navController = NavController(LocalContext.current))
-            2 -> EventScreen()
+            0 -> HomeScreen(navController)
+            1 -> TeamManagementScreen(navController = rememberNavController())
+            2 -> EventScreen(
+                userRole = "player",
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = {}, // players can’t register here
+                onAddEventClick = {}
+            )
+            3 -> NewsAndUpdateScreen()
+            4 -> SettingsScreen()
         }
         "admin" -> when (selectedScreen) {
-            0 -> HomeScreen()
-            1 -> TeamManagementScreen(navController = NavController(LocalContext.current))
-            2 -> EventScreen()
+            0 -> HomeScreen(navController)
+            1 -> TeamManagementScreen(navController = rememberNavController())
+            2 -> EventScreen(
+                userRole = "admin",
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = {}, // handled elsewhere
+                onAddEventClick = {
+                    navController.navigate("event_creation")
+                }
+            )
             3 -> NewsAndUpdateScreen()
             4 -> SettingsScreen()
         }
@@ -132,39 +197,39 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedScreen: Int, role: Stri
 }
 
 // Data class representing a navigation bar item
-data class NavBarItem (
+data class NavBarItem(
     val label: String,
-    val icon: @Composable () -> Unit, // Icon representing the item
-    var badgeCount: Int, // Badge count for notifications
-    )
+    val icon: @Composable () -> Unit,
+    var badgeCount: Int
+)
 
 @Preview
 @Composable
 fun AdminNavigationPreview() {
-    NavigationBar(role = "admin")
-}
-
-
-@Preview
-@Composable
-fun NoLoginNavigationPreview(){
-    NavigationBar(role = "noLogin")
+    // You’ll need a dummy NavController here for preview, but previews won’t show navigation
+    NavigationBar(role = "admin", navController = rememberNavController())
 }
 
 @Preview
 @Composable
-fun FanNavigationPreview(){
-    NavigationBar(role = "fan")
+fun NoLoginNavigationPreview() {
+    NavigationBar(role = "noLogin", navController = rememberNavController())
 }
 
 @Preview
 @Composable
-fun ManagerNavigationPreview(){
-    NavigationBar(role = "manager")
+fun FanNavigationPreview() {
+    NavigationBar(role = "fan", navController = rememberNavController())
 }
 
 @Preview
 @Composable
-fun PlayerNavigationPreview(){
-    NavigationBar(role = "player")
+fun ManagerNavigationPreview() {
+    NavigationBar(role = "manager", navController = rememberNavController())
+}
+
+@Preview
+@Composable
+fun PlayerNavigationPreview() {
+    NavigationBar(role = "player", navController = rememberNavController())
 }

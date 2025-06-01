@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.MainActivity
+import com.hockey.navigation.AppScreen
 import com.hockey.ui.viewmodels.AuthViewModel
 
 // import kotlin.coroutines.jvm.internal.CompletedContinuation.context
@@ -161,7 +162,7 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(8.dp))
         // Continue as Guest
         TextButton(
-            onClick = {  },
+            onClick = { navController.navigate(AppScreen.NoLoginMain.route) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(

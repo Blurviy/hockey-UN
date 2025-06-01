@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.hockey.R
+import com.hockey.navigation.AppScreen
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.ui.viewmodels.AuthViewModel
 
@@ -114,7 +115,7 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, aut
 
         // Register Button
         TextButton(
-            onClick = { navController.navigate("signup") },
+            onClick = { navController.navigate(AppScreen.Signup.route) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -146,7 +147,7 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, aut
 
         // Continue as Guest
         TextButton(
-            onClick = { navController.navigate("home") },
+            onClick = { navController.navigate(AppScreen.NoLoginMain.route) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(

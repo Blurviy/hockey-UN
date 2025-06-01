@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.utils.AppDropDown
 
 // Define a data class for events
 data class Event(
@@ -66,19 +69,22 @@ val events = listOf(
 
 @Composable
 fun EventScreen(
-    onEventClick: (Event) -> Unit = {}, // Default empty lambda for preview
-    onRegisterTeamClick: (Event) -> Unit = {},
-    onAddEventClick: (Event) -> Unit = {}
+    userRole: String, // Pass the role dynamically
+    onEventClick: (Event) -> Unit = {}, // Callback for navigating to Event Details
+    onRegisterTeamClick: (Event) -> Unit = {}, // Callback for Team Registration
+    onAddEventClick: () -> Unit = {} // Callback for Admin Event Creation
 ) {
     var selectedEvent by remember { mutableStateOf<Event?>(null) }
     var showRegistrationScreen by remember { mutableStateOf(false) }
-    var filter by remember { mutableStateOf("All") } // State to track selected filter
+    var filter by remember { mutableStateOf("All") } // State for filtering events
 
+    // Display the registration screen if selected
     if (showRegistrationScreen && selectedEvent != null) {
         EventRegistrationScreen(
             event = selectedEvent!!,
             onConfirmRegistration = { teamName ->
                 showRegistrationScreen = false
+                // Handle registration (for now, print/log success)
             },
             onCancelRegistration = {
                 showRegistrationScreen = false
@@ -91,26 +97,38 @@ fun EventScreen(
                 .padding(16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp, top = 18.dp, end = 15.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Event Entries ($filter)", // Display the selected filter
+                    text = "Event Entries ($filter)",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.headlineMedium
                 )
 
-                // Integrate Dropdown
-                EventScreenDropDown { selectedFilter ->
-                    filter = selectedFilter // Update the filter state
-                }
+                // Dropdown for Filtering
+                AppDropDown(
+                    menuItems = listOf(
+                        Triple("Unread", Icons.Default.Message) {
+                            // navController.navigate("unread_screen")
+                        },
+                        Triple("Favorites", Icons.Default.Favorite) {
+                            // navController.navigate("favorites_screen")
+                        },
+                        Triple("Groups", Icons.Default.Group) {
+                            // navController.navigate("groups_screen")
+                        }
+                    )
+                )
             }
 
+            // List of Events
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -119,7 +137,8 @@ fun EventScreen(
                 items(events) { event ->
                     EventCard(
                         event = event,
-                        onClick = { onEventClick(event) },
+                        userRole = userRole,
+                        onClick = { onEventClick(event) }, // Pass the click to navigate
                         onRegisterTeamClick = {
                             selectedEvent = event
                             showRegistrationScreen = true
@@ -127,9 +146,22 @@ fun EventScreen(
                     )
                 }
             }
+
+            // Show "Add Event" button for Admin
+            if (userRole == "Admin") {
+                Button(
+                    onClick = onAddEventClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Add Event")
+                }
+            }
         }
     }
 }
+
 
 @Composable
 fun EventScreenDropDown(
@@ -147,8 +179,8 @@ fun EventScreenDropDown(
     Box {
         // Filter Icon
         Icon(
-            painter = painterResource(id = R.drawable.ic_filter_alt), // Replace with actual filter icon resource
-            contentDescription = "Filter",
+            imageVector = Icons.Filled.MoreVert, // Replace with actual filter icon resource
+            contentDescription = "More options",
             modifier = Modifier
                 .size(24.dp)
                 .clickable { expanded = true } // Show the dropdown when clicked
@@ -188,6 +220,7 @@ fun EventScreenDropDown(
 @Composable
 fun EventCard(
     event: Event,
+    userRole: String, // Role determines visibility of buttons
     onClick: () -> Unit,
     onRegisterTeamClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -195,7 +228,7 @@ fun EventCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }, // Trigger navigation when clicked
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -228,76 +261,82 @@ fun EventCard(
                 }
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_calendar_today),
-                    contentDescription = "Date",
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = event.date,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
+            // Event Date and Location
+            Row {
+                Text(text = "Date: ${event.date}")
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = "Location: ${event.location}")
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_location),
-                    contentDescription = "Location",
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = event.location,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
-            }
-
-            if (event.teamCount != null) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_groups),
-                        contentDescription = "Teams",
-                        modifier = Modifier.size(16.dp),
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "${event.teamCount} Teams Registered",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
+            // Show Register Button for Manager Only
+            if (userRole == "Manager") {
+                Button(
+                    onClick = onRegisterTeamClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("REGISTER TEAM")
                 }
-            }
-
-            Button(
-                onClick = onRegisterTeamClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
-                    contentDescription = "Register Icon",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("REGISTER TEAM")
             }
         }
     }
 }
 
+@Composable
+fun EventDetailsScreen(
+    event: Event,
+    userRole: String,
+    onBackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = event.title,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(text = "Date: ${event.date}")
+        Text(text = "Location: ${event.location}")
+        if (event.teamCount != null) {
+            Text(text = "Teams Registered: ${event.teamCount}")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Back Button
+        Button(onClick = onBackClick) {
+            Text("Back")
+        }
+    }
+}
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun EventScreenPreview() {
     HockeyTheme {
-        EventScreen()
+        EventScreen(userRole = "manager")
+    }
+}
+
+@Preview
+@Composable
+fun EventDetailsScreenPreview() {
+    HockeyTheme {
+        EventDetailsScreen(
+            event = Event(
+                id = 1,
+                title = "Hockey Match: Team A vs Team B",
+                date = "March 15, 2025",
+                location = "Main Arena"),
+            userRole = "manager",
+            onBackClick = {}
+
+        )
     }
 }

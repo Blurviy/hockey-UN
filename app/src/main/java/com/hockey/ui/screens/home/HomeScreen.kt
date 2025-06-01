@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Card
@@ -20,52 +23,59 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hockey.ui.screens.events.EventScreen
+import androidx.navigation.NavController
+import com.hockey.R
+import com.hockey.navigation.AppScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.utils.AppDropDown
 
 // Data classes to represent QuickStats and Activities
-data class QuickStat(val title: String, val value: String, val icon: ImageVector, val onClick: () -> Unit)
-data class Activity(val title: String, val description: String, val time: String) // Activity updates
+data class QuickStat(
+    val title: String,
+    val value: String,
+    val icon: ImageVector,
+    val onClickRoute: String
+)
+
+data class Activity(val title: String, val description: String, val time: String)
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier){
-    // State to track the current screen to display
-    var selectedScreen by remember { mutableStateOf("home") }
-
-    // Back Button handler
-    BackHandler(enabled = selectedScreen != "home") {
-        selectedScreen = "home" // Navigate back to the home Screen
+fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
+    // Handle system Back: if this is not the root in NavHost, NavController will pop. No local state needed.
+    BackHandler {
+        if (!navController.popBackStack()) {
+            // If there is nothing to pop, optionally finish the activity or do nothing.
+        }
     }
 
+    // Define QuickStats cards: navigate to event list or team management
     val quickStats = listOf(
         QuickStat(
             title = "Active Teams",
             value = "12",
             icon = Icons.Outlined.People,
-            onClick = { selectedScreen = "active_teams" }
+            onClickRoute = "team_management" // This should match your NavHost route for TeamManagementScreen
         ),
         QuickStat(
             title = "Upcoming Events",
             value = "5",
             icon = Icons.Outlined.Schedule,
-            onClick = { selectedScreen = "events" }
+            onClickRoute = "event_list" // This should match your NavHost route for EventScreen
         )
     )
 
+    // Sample Recent Activities (static for now)
     val activities = listOf(
         Activity(
             title = "New Player Added",
@@ -79,62 +89,70 @@ fun HomeScreen(modifier: Modifier = Modifier){
         )
     )
 
-    // Display different screens based on selectedScreen state
-    when (selectedScreen) {
-        "home" -> {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Welcome Section
-                Text(
-                    text = "Welcome Back!",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Manage your sports events and teams efficiently.",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp, top = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Welcome Section
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp, top = 18.dp, end = 15.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+            text = "Welcome Back!",
+            fontSize = 24.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+        )
 
-                // Quick Stats Section
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    quickStats.forEach { stat ->
-                        QuickStatsCard(
-                            title = stat.title,
-                            value = stat.value,
-                            icon = stat.icon,
-                            onClick = stat.onClick
-                        )
+            AppDropDown(
+                menuItems = listOf(
+                    Triple("Login", painterResource(id = R.drawable.ic_login)) {
+                        navController.navigate(AppScreen.Login.route)
+                    },
+                    Triple("Signup", painterResource(id = R.drawable.ic_person_add)) {
+                        navController.navigate(AppScreen.Signup.route)
                     }
-                }
-
-                // Recent Activities Section
-                Text(
-                    text = "Recent Activities",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
                 )
-                activities.forEach { activity ->
-                    ActivityCard(
-                        title = activity.title,
-                        description = activity.description,
-                        time = activity.time
-                    )
-                }
+            )
+        }
+        Text(
+            text = "Manage your sports events and teams efficiently.",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        // Quick Stats Section
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            quickStats.forEach { stat ->
+                QuickStatsCard(
+                    title = stat.title,
+                    value = stat.value,
+                    icon = stat.icon,
+                    onClick = { navController.navigate(stat.onClickRoute) }
+                )
             }
         }
-        "events" -> {
-            EventScreen() // Show the EventScreen when "events" is selected
-        }
-        "active_teams" -> {
-            ActiveTeamsScreen(teams = mockTeams)
+
+        // Recent Activities Section
+        Text(
+            text = "Recent Activities",
+            fontSize = 18.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+        )
+        activities.forEach { activity ->
+            ActivityCard(
+                title = activity.title,
+                description = activity.description,
+                time = activity.time
+            )
         }
     }
 }
@@ -153,9 +171,9 @@ fun QuickStatsCard(
             contentColor = Color.White
         ),
         modifier = Modifier
-            .height(100.dp)
             .width(180.dp)
-            .clickable(onClick = onClick) // Adds clickable behaviour
+            .height(100.dp)
+            .clickable(onClick = onClick)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -163,7 +181,7 @@ fun QuickStatsCard(
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(icon, contentDescription = title, modifier = Modifier.size(24.dp))
-            Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(value, fontSize = 20.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
             Text(title, fontSize = 14.sp)
         }
     }
@@ -180,17 +198,18 @@ fun ActivityCard(title: String, description: String, time: String) {
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(title, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontSize = 16.sp)
             Text(description, fontSize = 14.sp, color = Color.Gray)
             Text(time, fontSize = 12.sp, color = Color.Gray)
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     HockeyTheme {
-        HomeScreen()
+        // Provide a dummy NavController for preview
+        HomeScreen(navController = NavController(LocalContext.current))
     }
 }

@@ -27,7 +27,6 @@ data class Player(
     var mobileNumber: String = ""
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerRegistrationScreen() {
     var teamName by remember { mutableStateOf("") }
@@ -71,17 +70,12 @@ fun PlayerRegistrationScreen() {
                 ) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
+
                 Text(
                     text = "Player Registration",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-
-
-
-
-
-
 
                 Spacer(modifier = Modifier.height(24.dp))
 
