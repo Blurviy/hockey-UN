@@ -1,6 +1,7 @@
 package com.hockey.ui.screens.events
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,6 +76,15 @@ fun EventScreen(
     var showRegistrationScreen by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf("All") } // State for filtering events
 
+    val filteredEvents = remember(filter) {
+        when (filter) {
+            "Unread" -> events.filter { !it.isActive }
+            "Favorites" -> events /*TODO add favourite logic*/
+            "Groups" -> events /*TODO add Groups logic*/
+            else -> events
+        }
+    }
+
     // Display the registration screen if selected
     if (showRegistrationScreen && selectedEvent != null) {
         EventRegistrationScreen(
@@ -123,6 +133,17 @@ fun EventScreen(
                         }
                     )
                 )
+
+                // Add Event Button for Admin
+                if (userRole == "Admin") {
+                    Button(
+                        onClick = onAddEventClick, // Callback for adding an event
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text("Add Event")
+                    }
+                }
+
             }
 
             // List of Events
@@ -131,7 +152,7 @@ fun EventScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(events) { event ->
+                items(filteredEvents) { event ->
                     EventCard(
                         event = event,
                         userRole = userRole,
@@ -225,7 +246,12 @@ fun EventCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }, // Trigger navigation when clicked
+            .clickable { onClick() } // Trigger navigation when clicked
+            .border(
+                width = 2.dp,
+                color = if (event.isActive) Color.Green else Color.Transparent,
+                shape = MaterialTheme.shapes.medium
+            ),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -353,6 +379,15 @@ fun EventScreenPreview() {
         EventScreen(userRole = "manager")
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun AdminEventScreenPreview() {
+    HockeyTheme {
+        EventScreen(userRole = "admin")
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

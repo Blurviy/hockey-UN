@@ -3,6 +3,7 @@ package com.hockey.ui.screens.auth
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import com.hockey.R
 import com.hockey.navigation.AppScreen
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.ui.viewmodels.AuthViewModel
+import com.hockey.utils.RoleButton
 
 // import com.hockey.ui.viewmodels.AuthViewModel
 
@@ -145,18 +147,55 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, aut
             Text("Forgot Password?", color = Color.Blue)
         }
 
-        // Continue as Guest
-        TextButton(
-            onClick = { navController.navigate(AppScreen.NoLoginMain.route) },
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_person_add),
-                contentDescription = "Home Icon",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Continue to App", color = Color.Blue)
+            item {
+                RoleButton(
+                    label = "Continue as Guest",
+                    iconRes = R.drawable.ic_person_add,
+                    color = Color.Blue
+                ) {
+                    navController.navigate(AppScreen.NoLoginMain.route)
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Manager Login",
+                    iconRes = R.drawable.ic_person,
+                    color = Color.Green
+                ) {
+                    navController.navigate(AppScreen.ManagerMain.route)
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Fan Login",
+                    iconRes = R.drawable.ic_star,
+                    color = Color.Magenta
+                ) {
+                    navController.navigate(AppScreen.FanMain.route)
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Player Login",
+                    iconRes = R.drawable.ic_sports,
+                    color = Color.Red
+                ) {
+                    navController.navigate(AppScreen.PlayerMain.route)
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Admin Login",
+                    iconRes = R.drawable.ic_admin,
+                    color = Color.Gray
+                ) {
+                    navController.navigate(AppScreen.AdminMain.route)
+                }
+            }
         }
     }
 }

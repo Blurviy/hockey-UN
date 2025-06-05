@@ -123,6 +123,7 @@ fun EventRegistrationScreenPreview() {
                 id = 1,
                 title = "Hockey Match: Team A vs Team B",
                 date = "March 15, 2025",
+                time = "5:00 PM",
                 location = "Main Arena"
             )
         )

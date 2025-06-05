@@ -44,8 +44,8 @@ sealed class AppScreen(val route: String) {
     object NewsAndUpdate : AppScreen("updates")
 
     // Team Screens
-    object TeamEdit : AppScreen("team_edit")
-    object PlayerManagement : AppScreen("player_management")
+    // object TeamEdit : AppScreen("team_edit")
+    object PlayerManagement : AppScreen("player_management") // Team ed
     object PlayerRegistration : AppScreen("player_registration")
     object TeamRegistration : AppScreen("team_registration")
     object TeamManagement : AppScreen("team_management")
