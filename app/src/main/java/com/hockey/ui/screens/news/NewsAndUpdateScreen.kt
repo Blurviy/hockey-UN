@@ -50,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.utils.AppDropDown
@@ -107,7 +108,7 @@ val newsList = listOf(
 )
 
 @Composable
-fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
+fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavController) {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     var showWebView by remember { mutableStateOf(false) }
@@ -297,7 +298,7 @@ fun NewsDialog(news: News, onDismiss: () -> Unit) {
 @Composable
 fun NewsPreview() {
     HockeyTheme {
-        NewsAndUpdateScreen()
+        NewsAndUpdateScreen(navController = NavController(LocalContext.current))
     }
 }
 

@@ -22,6 +22,7 @@ import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.MainActivity
 import com.hockey.navigation.AppScreen
+import com.hockey.ui.theme.HockeyTheme
 import com.hockey.ui.viewmodels.AuthViewModel
 
 // import kotlin.coroutines.jvm.internal.CompletedContinuation.context
@@ -179,7 +180,9 @@ fun SignupScreen(
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(navController = NavController(LocalContext.current),
-        authViewModel = viewModel()
-) // Your current approach is also fine
+    HockeyTheme {
+        SignupScreen(navController = NavController(LocalContext.current),
+            authViewModel = viewModel()
+        )
+    }
 }

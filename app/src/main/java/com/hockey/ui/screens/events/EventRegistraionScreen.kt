@@ -7,16 +7,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable
 fun EventRegistrationScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
     event: Event, // The selected event
     teamName: String = "", // Optional default team name
     onConfirmRegistration: (String) -> Unit = {}, // Callback for confirmation
@@ -125,7 +129,8 @@ fun EventRegistrationScreenPreview() {
                 date = "March 15, 2025",
                 time = "5:00 PM",
                 location = "Main Arena"
-            )
+            ),
+            navController = NavController(LocalContext.current)
         )
     }
 }

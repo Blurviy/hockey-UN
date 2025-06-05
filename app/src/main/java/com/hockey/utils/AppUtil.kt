@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.hockey.ui.screens.events.Event
 
 object AppUtil {
     fun showToast(context: Context, message: String) {
@@ -92,6 +93,33 @@ fun AppDropDown(
                     }
                 )
             }
+
+
+        }
+    }
+}
+
+@Composable
+fun SampleEvents(): List<Event> {
+    return listOf(
+        Event(1, "Hockey Match: Team A vs Team B", "March 15, 2025", "5:00 PM", "Main Arena"),
+        Event(2, "Training Camp", "March 20, 2025", "8:00 AM", "Training Center"),
+        Event(3, "Fan Meet & Greet", "March 25, 2025", "7:00 PM", "Community Hall"),
+        Event(4, "Championship Final", "April 1, 2025", "8:00 AM", "National Stadium")
+    )
+}
+
+@Composable
+fun FilteredEvents(
+    events: List<Event>,
+    filter: String
+): List<Event> {
+    return remember(filter) {
+        when (filter) {
+            "Unread" -> events.filter { !it.isActive }
+            "Favorites" -> events /*TODO add favourite logic*/
+            "Groups" -> events /*TODO add Groups logic*/
+            else -> events
         }
     }
 }

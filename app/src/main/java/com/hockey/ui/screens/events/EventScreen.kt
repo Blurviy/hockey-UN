@@ -38,13 +38,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.utils.AppDropDown
+import com.hockey.utils.FilteredEvents
+import com.hockey.utils.SampleEvents
 
 // Define a data class for events
 data class Event(
@@ -57,16 +62,10 @@ data class Event(
     val isActive: Boolean = false
 )
 
-// Sample events list
-val events = listOf(
-    Event(1, "Hockey Match: Team A vs Team B", "March 15, 2025", "5:00 PM", "Main Arena"),
-    Event(2, "Training Camp", "March 20, 2025", "8:00 AM", "Training Center"),
-    Event(3, "Fan Meet & Greet", "March 25, 2025", "7:00 PM", "Community Hall"),
-    Event(4, "Championship Final", "April 1, 2025", "8:00 AM","National Stadium")
-)
-
 @Composable
 fun EventScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
     userRole: String, // Pass the role dynamically
     onEventClick: (Event) -> Unit = {}, // Callback for navigating to Event Details
     onRegisterTeamClick: (Event) -> Unit = {}, // Callback for Team Registration
@@ -76,14 +75,8 @@ fun EventScreen(
     var showRegistrationScreen by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf("All") } // State for filtering events
 
-    val filteredEvents = remember(filter) {
-        when (filter) {
-            "Unread" -> events.filter { !it.isActive }
-            "Favorites" -> events /*TODO add favourite logic*/
-            "Groups" -> events /*TODO add Groups logic*/
-            else -> events
-        }
-    }
+    val events = SampleEvents()
+    val filteredEvents = FilteredEvents(events, filter)
 
     // Display the registration screen if selected
     if (showRegistrationScreen && selectedEvent != null) {
@@ -95,7 +88,8 @@ fun EventScreen(
             },
             onCancelRegistration = {
                 showRegistrationScreen = false
-            }
+            },
+            navController = NavController(LocalContext.current)
         )
     } else {
         Column(
@@ -310,58 +304,59 @@ fun EventDetailsScreen(
     userRole: String,
     onBackClick: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+        contentAlignment = Alignment.Center
     ) {
-        // Title
-        Text(
-            text = event.title,
-            fontSize = 24.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Date and Time
-        Text(
-            text = "Date & Time: ${event.date} | ${event.time}",
-            color = Color.Gray,
-            fontSize = 16.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Location
-        Text(
-            text = "Location: ${event.location}",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        // Teams Registered (if available)
-        event.teamCount?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Teams Registered: $it",
-                fontSize = 16.sp
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Back Button
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+            // Title
+            Text(
+                text = event.title,
+                fontSize = 24.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Date and Time
+            Text(
+                text = "Date & Time: ${event.date} | ${event.time}",
+                color = Color.Gray,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Location
+            Text(
+                text = "Location: ${event.location}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
+
+            // Teams Registered (if available)
+            event.teamCount?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Teams Registered: $it",
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Back Button
             Button(onClick = onBackClick) {
                 Text("Back")
             }
@@ -369,14 +364,11 @@ fun EventDetailsScreen(
     }
 }
 
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun EventScreenPreview() {
     HockeyTheme {
-        EventScreen(userRole = "manager")
+        EventScreen(userRole = "manager", navController = NavController(LocalContext.current))
     }
 }
 
@@ -384,7 +376,7 @@ fun EventScreenPreview() {
 @Composable
 fun AdminEventScreenPreview() {
     HockeyTheme {
-        EventScreen(userRole = "admin")
+        EventScreen(userRole = "admin", navController = NavController(LocalContext.current))
     }
 }
 

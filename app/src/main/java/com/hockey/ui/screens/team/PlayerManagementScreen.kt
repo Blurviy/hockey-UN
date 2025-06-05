@@ -18,8 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.ui.viewmodels.AuthViewModel
 
 // Define a data class for athletes
 data class Athlete(
@@ -40,10 +42,12 @@ val athletes = listOf(
 
 @Composable
 fun PlayerManagementScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
     onAddAthleteClick: () -> Unit = {}, // Callback for adding an athlete
     onEditAthleteClick: (Athlete) -> Unit = {}, // Callback for editing an athlete
     onContactAthleteClick: (Athlete) -> Unit = {}, // Callback for contacting an athlete
-    onDeleteAthleteClick: (Athlete) -> Unit = {} // Callback for deleting an athlete
+    onDeleteAthleteClick: (Athlete) -> Unit = {}, // Callback for deleting an athlete
 ) {
     val context = LocalContext.current
     Column(
@@ -185,6 +189,6 @@ fun AthleteCard(
 @Composable
 fun PlayerManagementScreenPreview() {
     HockeyTheme {
-        PlayerManagementScreen()
+        PlayerManagementScreen(navController = NavController(LocalContext.current))
     }
 }

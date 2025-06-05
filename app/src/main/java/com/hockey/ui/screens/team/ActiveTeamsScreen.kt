@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 // HockeyTeam data class
 // It is supposed to be Team, but i changed it because of the errors
@@ -33,7 +35,7 @@ val mockTeams = listOf(
 
 // Main ActiveTeamsScreen composable
 @Composable
-fun ActiveTeamsScreen(teams: List<HockeyTeam>) {
+fun ActiveTeamsScreen(teams: List<HockeyTeam>, modifier: Modifier = Modifier, navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -105,5 +107,5 @@ fun TeamCard(team: HockeyTeam) {
 @Preview(showBackground = true)
 @Composable
 fun ActiveTeamsScreenPreview() {
-    ActiveTeamsScreen(teams = mockTeams)
+    ActiveTeamsScreen(teams = mockTeams, navController = NavController(LocalContext.current))
 }

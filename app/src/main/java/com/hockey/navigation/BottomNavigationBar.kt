@@ -1,5 +1,6 @@
 package com.hockey.navigation
 
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,13 +22,18 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hockey.R
+import com.hockey.ui.screens.events.AdminEventScreen
 import com.hockey.ui.screens.events.EventScreen
+import com.hockey.ui.screens.events.FanEventScreen
+import com.hockey.ui.screens.events.ManagerEventScreen
+import com.hockey.ui.screens.events.PlayerEventScreen
 import com.hockey.ui.screens.home.HomeScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.settings.SettingsScreen
@@ -130,71 +136,41 @@ fun ContentScreen(
                     navController.navigate("event_details/${event.id}")
                 },
                 onRegisterTeamClick = {}, // No registration for noLogin
-                onAddEventClick = {}
+                onAddEventClick = {},
+                navController = NavController(LocalContext.current)
             )
-            2 -> NewsAndUpdateScreen()
+            2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
         }
         "manager" -> when (selectedScreen) {
             0 -> HomeScreen(navController)
             1 -> TeamManagementScreen(navController = rememberNavController())
-            2 -> EventScreen(
-                userRole = "manager",
-                onEventClick = { event ->
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = { event ->
-                    /* manager team registration logic—e.g., open a dialog */
-                },
-                onAddEventClick = {}
-            )
-            3 -> NewsAndUpdateScreen()
-            4 -> SettingsScreen()
+            2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
+            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+            4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "fan" -> when (selectedScreen) {
             0 -> HomeScreen(navController)
-            1 -> EventScreen(
-                userRole = "fan",
-                onEventClick = { event ->
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // fans can’t register
-                onAddEventClick = {}
-            )
-            2 -> NewsAndUpdateScreen()
-            3 -> SettingsScreen()
+            1 -> FanEventScreen(navController = NavController(LocalContext.current))
+            2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+            3 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "player" -> when (selectedScreen) {
             0 -> HomeScreen(navController)
             1 -> TeamManagementScreen(navController = rememberNavController())
-            2 -> EventScreen(
-                userRole = "player",
-                onEventClick = { event ->
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // players can’t register here
-                onAddEventClick = {}
-            )
-            3 -> NewsAndUpdateScreen()
-            4 -> SettingsScreen()
+            2 -> PlayerEventScreen(navController = NavController(LocalContext.current))
+            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+            4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "admin" -> when (selectedScreen) {
             0 -> HomeScreen(navController)
             1 -> TeamManagementScreen(navController = rememberNavController())
-            2 -> EventScreen(
-                userRole = "admin",
-                onEventClick = { event ->
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // handled elsewhere
-                onAddEventClick = {
-                    navController.navigate("event_creation")
-                }
-            )
-            3 -> NewsAndUpdateScreen()
-            4 -> SettingsScreen()
+            2 -> AdminEventScreen(navController = NavController(LocalContext.current))
+            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+            4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
     }
 }
+
 
 // Data class representing a navigation bar item
 data class NavBarItem(

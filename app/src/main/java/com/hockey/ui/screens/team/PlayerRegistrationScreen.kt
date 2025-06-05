@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hockey.ui.theme.HockeyTheme
 
 data class Player(
@@ -28,7 +29,7 @@ data class Player(
 )
 
 @Composable
-fun PlayerRegistrationScreen() {
+fun PlayerRegistrationScreen(modifier: Modifier = Modifier, navController: NavController) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -269,6 +270,6 @@ fun PlayerRegistrationScreen() {
 @Composable
 fun PlayerRegistrationScreenPreview() {
     HockeyTheme {
-        PlayerRegistrationScreen()
+        PlayerRegistrationScreen(navController = NavController(LocalContext.current))
     }
 }
