@@ -1,6 +1,5 @@
 package com.hockey.navigation
 
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -113,7 +112,7 @@ fun NavigationBar(
         ContentScreen(
             modifier = Modifier.padding(innerPadding),
             selectedScreen = selectedScreen,
-            userRole = role,
+            role = role,
             navController = navController
         )
     }
@@ -123,14 +122,14 @@ fun NavigationBar(
 fun ContentScreen(
     modifier: Modifier = Modifier,
     selectedScreen: Int,
-    userRole: String,
+    role: String,
     navController: NavController
 ) {
-    when (userRole) {
+    when (role) {
         "noLogin" -> when (selectedScreen) {
-            0 -> HomeScreen(navController)
+            0 -> HomeScreen(navController, role = "noLogin")
             1 -> EventScreen(
-                userRole = "noLogin",
+                role = "noLogin",
                 onEventClick = { event ->
                     // Navigate to the details route for this event
                     navController.navigate("event_details/${event.id}")
@@ -142,28 +141,28 @@ fun ContentScreen(
             2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
         }
         "manager" -> when (selectedScreen) {
-            0 -> HomeScreen(navController)
+            0 -> HomeScreen(navController, role = "manager")
             1 -> TeamManagementScreen(navController = rememberNavController())
             2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "fan" -> when (selectedScreen) {
-            0 -> HomeScreen(navController)
+            0 -> HomeScreen(navController, role = "fan")
             1 -> FanEventScreen(navController = NavController(LocalContext.current))
             2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             3 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "player" -> when (selectedScreen) {
-            0 -> HomeScreen(navController)
+            0 -> HomeScreen(navController, role = "player")
             1 -> TeamManagementScreen(navController = rememberNavController())
             2 -> PlayerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "admin" -> when (selectedScreen) {
-            0 -> HomeScreen(navController)
-            1 -> TeamManagementScreen(navController = rememberNavController())
+            0 -> HomeScreen(navController, role = "admin")
+            1 -> TeamManagementScreen(navController = rememberNavController()) // needs its own screen
             2 -> AdminEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))

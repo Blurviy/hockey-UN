@@ -22,11 +22,11 @@ import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.news.NewsCreationScreen
 import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
-import com.hockey.ui.screens.team.HockeyTeam
 import com.hockey.ui.screens.team.MessagesScreen
 import com.hockey.ui.screens.team.PlayerManagementScreen
 import com.hockey.ui.screens.team.TeamManagementScreen
 import com.hockey.ui.screens.team.TeamRegistrationScreen
+import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.viewmodels.AuthViewModel
 import com.hockey.utils.SampleEvents
 
@@ -53,7 +53,7 @@ sealed class AppScreen(val route: String) {
     object PlayerEvent : AppScreen("player_event")
     object AdminEvent : AppScreen("admin_event")
 
-    // News Screens
+    // News Screensa
     object NewsCreation : AppScreen("news_creation")
     object NewsAndUpdate : AppScreen("updates")
 
@@ -103,9 +103,57 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
         }
 
         // Event List Screen
-        composable("event_list") {
+        composable("event_list_noLogin") {
             EventScreen(
-                userRole = "Manager", // Replace with a dynamic role if needed
+                role = "noLogin", // Replace with a dynamic role if needed
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = { /* Handle registration */ },
+                onAddEventClick = { /* Handle adding events */ },
+                navController = NavController(LocalContext.current)
+            )
+        }
+        // Event List Screen
+        composable("event_list_manager") {
+            EventScreen(
+                role = "manager", // Replace with a dynamic role if needed
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = { /* Handle registration */ },
+                onAddEventClick = { /* Handle adding events */ },
+                navController = NavController(LocalContext.current)
+            )
+        }
+        // Event List Screen
+        composable("event_list_fan") {
+            EventScreen(
+                role = "fan", // Replace with a dynamic role if needed
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = { /* Handle registration */ },
+                onAddEventClick = { /* Handle adding events */ },
+                navController = NavController(LocalContext.current)
+            )
+        }
+        // Event List Screen
+        composable("event_list_player") {
+            EventScreen(
+                role = "player", // Replace with a dynamic role if needed
+                onEventClick = { event ->
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = { /* Handle registration */ },
+                onAddEventClick = { /* Handle adding events */ },
+                navController = NavController(LocalContext.current)
+            )
+        }
+        // Event List Screen
+        composable("event_list_admin") {
+            EventScreen(
+                role = "admin", // Replace with a dynamic role if needed
                 onEventClick = { event ->
                     navController.navigate("event_details/${event.id}")
                 },
@@ -165,7 +213,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             TeamRegistrationScreen(modifier, navController)
         }
         composable(AppScreen.ActiveTeams.route) {
-            ActiveTeamsScreen(modifier as List<HockeyTeam>, navController = NavController(LocalContext.current))
+            ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = NavController(LocalContext.current))
         }
 
         // News Screens

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Message
@@ -66,7 +67,7 @@ data class Event(
 fun EventScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    userRole: String, // Pass the role dynamically
+    role: String, // Pass the role dynamically
     onEventClick: (Event) -> Unit = {}, // Callback for navigating to Event Details
     onRegisterTeamClick: (Event) -> Unit = {}, // Callback for Team Registration
     onAddEventClick: () -> Unit = {} // Callback for Admin Event Creation
@@ -116,7 +117,7 @@ fun EventScreen(
                 // Dropdown for Filtering
                 AppDropDown(
                     menuItems = listOf(
-                        Triple("Unread", Icons.Default.Message) {
+                        Triple("Unread", Icons.AutoMirrored.Filled.Message) {
                             // navController.navigate("unread_screen")
                         },
                         Triple("Favorites", Icons.Default.Favorite) {
@@ -129,7 +130,7 @@ fun EventScreen(
                 )
 
                 // Add Event Button for Admin
-                if (userRole == "Admin") {
+                if (role == "Admin") {
                     Button(
                         onClick = onAddEventClick, // Callback for adding an event
                         modifier = Modifier.padding(start = 8.dp)
@@ -149,7 +150,7 @@ fun EventScreen(
                 items(filteredEvents) { event ->
                     EventCard(
                         event = event,
-                        userRole = userRole,
+                        userRole = role,
                         onClick = { onEventClick(event) }, // Pass the click to navigate
                         onRegisterTeamClick = {
                             selectedEvent = event
@@ -160,7 +161,7 @@ fun EventScreen(
             }
 
             // Show "Add Event" button for Admin
-            if (userRole == "Admin") {
+            if (role == "Admin") {
                 Button(
                     onClick = onAddEventClick,
                     modifier = Modifier
@@ -182,10 +183,10 @@ fun EventScreenDropDown(
     var expanded by remember { mutableStateOf(false) } // State to control the visibility of the drop-down menu
 
     val menuItems = listOf(
-        "Unread" to Icons.Default.Message,
+        "Unread" to Icons.AutoMirrored.Filled.Message,
         "Favorites" to Icons.Default.Favorite,
         "Groups" to Icons.Default.Group,
-        "Drafts" to Icons.Default.Message
+        "Drafts" to Icons.AutoMirrored.Filled.Message
     )
 
     Box {
@@ -368,7 +369,7 @@ fun EventDetailsScreen(
 @Composable
 fun EventScreenPreview() {
     HockeyTheme {
-        EventScreen(userRole = "manager", navController = NavController(LocalContext.current))
+        EventScreen(role = "manager", navController = NavController(LocalContext.current))
     }
 }
 
@@ -376,7 +377,7 @@ fun EventScreenPreview() {
 @Composable
 fun AdminEventScreenPreview() {
     HockeyTheme {
-        EventScreen(userRole = "admin", navController = NavController(LocalContext.current))
+        EventScreen(role = "admin", navController = NavController(LocalContext.current))
     }
 }
 

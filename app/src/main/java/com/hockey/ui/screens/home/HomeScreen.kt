@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -23,6 +25,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.navigation.AppScreen
+import com.hockey.ui.screens.news.News
+import com.hockey.ui.screens.news.NewsCard
+import com.hockey.ui.screens.news.newsList
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.theme.HockeyTheme
@@ -45,18 +54,28 @@ data class QuickStat(
     val title: String,
     val value: String,
     val icon: ImageVector,
-    val onClickRoute: String
+    val onClickRoute: String?
 )
 
 data class Activity(val title: String, val description: String, val time: String)
 
 @Composable
-fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
-    // Handle system Back: if this is not the root in NavHost, NavController will pop. No local state needed.
-    BackHandler {
-        if (!navController.popBackStack()) {
-            // If there is nothing to pop, optionally finish the activity or do nothing.
-        }
+fun HomeScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    role: String
+) {
+    // State to track the current screen to display
+    var selectedScreen by remember { mutableStateOf("home") }
+
+    var showWebView by remember { mutableStateOf(false) }
+    var currentUrl by remember { mutableStateOf("") }
+    var selectedNews by remember { mutableStateOf<News?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Back Button handler
+    BackHandler(enabled = selectedScreen != "home") {
+        selectedScreen = "home" // Navigate back to the home Screen
     }
 
     // Define QuickStats cards: navigate to event list or team management
@@ -65,17 +84,17 @@ fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
             title = "Active Teams",
             value = "12",
             icon = Icons.Outlined.People,
-            onClickRoute = "team_management" // This should match your NavHost route for TeamManagementScreen
+            onClickRoute = "active_teams"
         ),
         QuickStat(
             title = "Upcoming Events",
             value = "5",
             icon = Icons.Outlined.Schedule,
-            onClickRoute = "event_list" // This should match your NavHost route for EventScreen
+            onClickRoute = null
         )
     )
 
-    // Sample Recent Activities (static for now)
+    // Static Data for Cards
     val activities = listOf(
         Activity(
             title = "New Player Added",
@@ -136,7 +155,22 @@ fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
                     title = stat.title,
                     value = stat.value,
                     icon = stat.icon,
-                    onClick = { navController.navigate(stat.onClickRoute) }
+                    onClick = {
+                        if (stat.title == "Upcoming Events") {
+                            // Role-based navigation for Upcoming Events card
+                            when (role) {
+                                "noLogin" -> navController.navigate("event_list_noLogin")
+                                "manager" -> navController.navigate("event_list_manager")
+                                "player" -> navController.navigate("event_list_player")
+                                "admin" -> navController.navigate("event_list_admin")
+                                "fan" -> navController.navigate("event_list_fan")
+                                else -> {/* DO NOTHING */}
+                            }
+                        } else {
+                            // Static navigation for other cards
+                            stat.onClickRoute?.let { route -> navController.navigate(route) }
+                        }
+                    }
                 )
             }
         }
@@ -147,12 +181,22 @@ fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
             fontSize = 18.sp,
             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
         )
-        activities.forEach { activity ->
-            ActivityCard(
-                title = activity.title,
-                description = activity.description,
-                time = activity.time
-            )
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 8.dp) // Add padding to separate from the header
+        ) {
+            items(newsList) { news ->
+                NewsCard(news) {
+                    if (news.link != null) {
+                        currentUrl = news.link
+                        showWebView = true
+                    } else {
+                        selectedNews = news
+                        showDialog = true
+                    }
+                }
+            }
         }
     }
 }
@@ -209,7 +253,6 @@ fun ActivityCard(title: String, description: String, time: String) {
 @Composable
 fun HomeScreenPreview() {
     HockeyTheme {
-        // Provide a dummy NavController for preview
-        HomeScreen(navController = NavController(LocalContext.current))
+        HomeScreen(navController = NavController(LocalContext.current), role = "manager")
     }
 }
