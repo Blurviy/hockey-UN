@@ -24,7 +24,7 @@ import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.MessagesScreen
 import com.hockey.ui.screens.team.PlayerManagementScreen
-import com.hockey.ui.screens.team.TeamManagementScreen
+import com.hockey.ui.screens.team.TeamScreen
 import com.hockey.ui.screens.team.TeamRegistrationScreen
 import com.hockey.ui.screens.team.mockTeams
 import com.hockey.ui.viewmodels.AuthViewModel
@@ -62,7 +62,7 @@ sealed class AppScreen(val route: String) {
     object PlayerManagement : AppScreen("player_management") // Team ed
     object PlayerRegistration : AppScreen("player_registration")
     object TeamRegistration : AppScreen("team_registration")
-    object TeamManagement : AppScreen("team_management")
+    object Team : AppScreen("team")
     object ActiveTeams : AppScreen("active_teams")
 
     // Miscellaneous Screens
@@ -111,7 +111,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
                 },
                 onRegisterTeamClick = { /* Handle registration */ },
                 onAddEventClick = { /* Handle adding events */ },
-                navController = NavController(LocalContext.current)
+                navController = navController
             )
         }
         // Event List Screen
@@ -123,7 +123,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
                 },
                 onRegisterTeamClick = { /* Handle registration */ },
                 onAddEventClick = { /* Handle adding events */ },
-                navController = NavController(LocalContext.current)
+                navController = navController
             )
         }
         // Event List Screen
@@ -135,7 +135,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
                 },
                 onRegisterTeamClick = { /* Handle registration */ },
                 onAddEventClick = { /* Handle adding events */ },
-                navController = NavController(LocalContext.current)
+                navController = navController
             )
         }
         // Event List Screen
@@ -147,7 +147,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
                 },
                 onRegisterTeamClick = { /* Handle registration */ },
                 onAddEventClick = { /* Handle adding events */ },
-                navController = NavController(LocalContext.current)
+                navController = navController
             )
         }
         // Event List Screen
@@ -159,7 +159,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
                 },
                 onRegisterTeamClick = { /* Handle registration */ },
                 onAddEventClick = { /* Handle adding events */ },
-                navController = NavController(LocalContext.current)
+                navController = navController
             )
         }
 
@@ -200,8 +200,8 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
         }
 
         // Team Screens
-        composable(AppScreen.TeamManagement.route) {
-            TeamManagementScreen(modifier, navController)
+        composable(AppScreen.Team.route) {
+            TeamScreen(modifier, navController)
         }
         composable(AppScreen.PlayerManagement.route) {
              PlayerManagementScreen(modifier, navController)
@@ -213,7 +213,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             TeamRegistrationScreen(modifier, navController)
         }
         composable(AppScreen.ActiveTeams.route) {
-            ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = NavController(LocalContext.current))
+            ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = navController)
         }
 
         // News Screens

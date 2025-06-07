@@ -36,7 +36,7 @@ import com.hockey.ui.screens.events.PlayerEventScreen
 import com.hockey.ui.screens.home.HomeScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.settings.SettingsScreen
-import com.hockey.ui.screens.team.TeamManagementScreen
+import com.hockey.ui.screens.team.TeamScreen
 
 @Composable
 fun NavigationBar(
@@ -142,7 +142,7 @@ fun ContentScreen(
         }
         "manager" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "manager")
-            1 -> TeamManagementScreen(navController = rememberNavController())
+            1 -> TeamScreen(navController = rememberNavController())
             2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
@@ -155,14 +155,14 @@ fun ContentScreen(
         }
         "player" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "player")
-            1 -> TeamManagementScreen(navController = rememberNavController())
+            1 -> TeamScreen(navController = rememberNavController())
             2 -> PlayerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "admin" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "admin")
-            1 -> TeamManagementScreen(navController = rememberNavController()) // needs its own screen
+            1 -> TeamScreen(navController = rememberNavController()) // needs its own screen
             2 -> AdminEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))

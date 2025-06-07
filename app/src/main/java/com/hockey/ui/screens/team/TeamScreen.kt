@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 
 @Composable
-fun TeamManagementScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun TeamScreen(modifier: Modifier = Modifier, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,13 +34,13 @@ fun TeamManagementScreen(modifier: Modifier = Modifier, navController: NavContro
 
         // Cards for navigation
         ActivityCard("Player Management") {
-            navController.navigate("playerManagement")
+            navController.navigate("player_management")
         }
         ActivityCard("Player Registration") {
-            navController.navigate("playerRegistration")
+            navController.navigate("player_registration")
         }
         ActivityCard("Team Registration") {
-            navController.navigate("teamRegistration")
+            navController.navigate("team_registration")
         }
     }
 }
@@ -77,8 +77,8 @@ fun ActivityCard(title: String, onClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun TeamManagementScreenPreview() {
+fun TeamScreenPreview() {
     HockeyTheme {
-        TeamManagementScreen(navController = NavController(LocalContext.current))
+        TeamScreen(navController = NavController(LocalContext.current))
     }
 }
