@@ -29,7 +29,7 @@ data class Player(
 )
 
 @Composable
-fun PlayerRegistrationScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun PlayerRegistrationScreen(modifier: Modifier = Modifier) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -270,6 +270,6 @@ fun PlayerRegistrationScreen(modifier: Modifier = Modifier, navController: NavCo
 @Composable
 fun PlayerRegistrationScreenPreview() {
     HockeyTheme {
-        PlayerRegistrationScreen(navController = NavController(LocalContext.current))
+        PlayerRegistrationScreen()
     }
 }

@@ -142,7 +142,7 @@ fun ContentScreen(
         }
         "manager" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "manager")
-            1 -> TeamScreen(navController = rememberNavController())
+            1 -> TeamScreen(navController)
             2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
@@ -155,14 +155,14 @@ fun ContentScreen(
         }
         "player" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "player")
-            1 -> TeamScreen(navController = rememberNavController())
+            1 -> TeamScreen(navController)
             2 -> PlayerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "admin" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "admin")
-            1 -> TeamScreen(navController = rememberNavController()) // needs its own screen
+            1 -> TeamScreen(navController) // needs its own screen
             2 -> AdminEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))

@@ -24,6 +24,7 @@ import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.MessagesScreen
 import com.hockey.ui.screens.team.PlayerManagementScreen
+import com.hockey.ui.screens.team.PlayerRegistrationScreen
 import com.hockey.ui.screens.team.TeamScreen
 import com.hockey.ui.screens.team.TeamRegistrationScreen
 import com.hockey.ui.screens.team.mockTeams
@@ -201,16 +202,16 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
 
         // Team Screens
         composable(AppScreen.Team.route) {
-            TeamScreen(modifier, navController)
+            TeamScreen(navController)
         }
         composable(AppScreen.PlayerManagement.route) {
-             PlayerManagementScreen(modifier, navController)
+             PlayerManagementScreen(modifier)
         }
         composable(AppScreen.PlayerRegistration.route) {
-             PlayerManagementScreen(modifier, navController)
+            PlayerRegistrationScreen(modifier)
         }
         composable(AppScreen.TeamRegistration.route) {
-            TeamRegistrationScreen(modifier, navController)
+            TeamRegistrationScreen()
         }
         composable(AppScreen.ActiveTeams.route) {
             ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = navController)

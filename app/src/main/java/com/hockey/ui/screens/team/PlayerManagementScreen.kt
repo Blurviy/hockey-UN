@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -43,7 +44,6 @@ val athletes = listOf(
 @Composable
 fun PlayerManagementScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     onAddAthleteClick: () -> Unit = {}, // Callback for adding an athlete
     onEditAthleteClick: (Athlete) -> Unit = {}, // Callback for editing an athlete
     onContactAthleteClick: (Athlete) -> Unit = {}, // Callback for contacting an athlete
@@ -61,7 +61,7 @@ fun PlayerManagementScreen(
             },
             modifier = Modifier.align(Alignment.Start)
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
         // Header with title and "Add Athlete" button
@@ -189,6 +189,6 @@ fun AthleteCard(
 @Composable
 fun PlayerManagementScreenPreview() {
     HockeyTheme {
-        PlayerManagementScreen(navController = NavController(LocalContext.current))
+        PlayerManagementScreen()
     }
 }

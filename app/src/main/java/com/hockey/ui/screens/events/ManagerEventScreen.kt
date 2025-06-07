@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Message
@@ -85,7 +86,7 @@ fun ManagerEventScreen(
                 // Dropdown for Filtering
                 AppDropDown(
                     menuItems = listOf(
-                        Triple("Unread", Icons.Default.Message) {
+                        Triple("Unread", Icons.AutoMirrored.Filled.Message) {
                             // navController.navigate("unread_screen")
                         },
                         Triple("Favorites", Icons.Default.Favorite) {

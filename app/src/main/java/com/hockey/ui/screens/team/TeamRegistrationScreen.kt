@@ -28,9 +28,8 @@ data class Team(
     var mobileNumber: String = ""
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamRegistrationScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun TeamRegistrationScreen(modifier: Modifier = Modifier) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -317,6 +316,6 @@ fun TeamRegistrationScreen(modifier: Modifier = Modifier, navController: NavCont
 @Composable
 fun TeamRegistrationScreenPreview() {
     HockeyTheme {
-       TeamRegistrationScreen(navController = NavController(LocalContext.current))
+       TeamRegistrationScreen()
     }
 }
