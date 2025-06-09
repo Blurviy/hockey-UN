@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -33,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.ArrowBack
 
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -128,7 +130,7 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavControl
                     .padding(8.dp)
                     .align(Alignment.Start)
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
 
             // WebView display
@@ -146,7 +148,7 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavControl
                     onClick = { (context as? ComponentActivity)?.finish() },
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
 
                 // DropDown

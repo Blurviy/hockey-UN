@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,16 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.ContextCompat.startActivity
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
-import androidx.core.net.toUri
 
 // Athlete data class
 data class Athlete(
@@ -42,34 +41,21 @@ data class Athlete(
     val email: String
 )
 
-// ViewModel to manage athletes list
-class PlayerViewModel : ViewModel() {
-    private val _athletes = mutableStateListOf(
-        Athlete(1, "John Smith", "Forward", "23 Goals", R.drawable.john_smith, "john.smith@example.com"),
-        Athlete(2, "Sarah Johnson", "Midfielder", "15 Assists", R.drawable.sarah_johnson, "sarah.johnson@example.com"),
-        Athlete(3, "Mike Wilson", "Defender", "5 Clean Sheets", R.drawable.mike_wilson, "mike.wilson@example.com")
-    )
-    val athletes: List<Athlete> get() = _athletes
-
-    fun updateAthlete(updatedAthlete: Athlete) {
-        val index = _athletes.indexOfFirst { it.id == updatedAthlete.id }
-        if (index != -1) {
-            _athletes[index] = updatedAthlete
-        }
-    }
-
-    fun deleteAthlete(athlete: Athlete) {
-        _athletes.removeIf { it.id == athlete.id }
-    }
-}
-
 @Composable
 fun PlayerManagementScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModel: PlayerViewModel = viewModel(),
-    onAddAthleteClick: () -> Unit = {}
+    navController: NavController
 ) {
+    val context = LocalContext.current
+    var athletes by remember { mutableStateOf(
+        listOf(
+            Athlete(1, "John Smith", "Forward", "23 Goals", R.drawable.john_smith, "john.smith@example.com"),
+            Athlete(2, "Sarah Johnson", "Midfielder", "15 Assists", R.drawable.sarah_johnson, "sarah.johnson@example.com"),
+            Athlete(3, "Mike Wilson", "Defender", "5 Clean Sheets", R.drawable.mike_wilson, "mike.wilson@example.com")
+        )
+    ) }
+    var showAddDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -96,7 +82,7 @@ fun PlayerManagementScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
             Button(
-                onClick = onAddAthleteClick,
+                onClick = { showAddDialog = true },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier.height(36.dp)
             ) {
@@ -113,30 +99,102 @@ fun PlayerManagementScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            items(viewModel.athletes) { athlete ->
+            items(athletes) { athlete ->
                 AthleteCard(
                     athlete = athlete,
-                    onEditAthlete = { updatedAthlete -> viewModel.updateAthlete(updatedAthlete) },
-                    onContactAthlete = {
-                        val context = LocalContext.current
-                        val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            data = "mailto:${athlete.email}".toUri()
-                            putExtra(Intent.EXTRA_SUBJECT, "Contacting ${athlete.name}")
-                        }
-                        context.startActivity(Intent.createChooser(intent, "Send Email"))
+                    context = context,
+                    onEditAthlete = { updatedAthlete ->
+                        athletes = athletes.map { if (it.id == updatedAthlete.id) updatedAthlete else it }
                     },
-                    onDeleteAthlete = { viewModel.deleteAthlete(athlete) }
+                    onDeleteAthlete = {
+                        athletes = athletes.filter { it.id != athlete.id }
+                    }
                 )
             }
         }
     }
+
+    if (showAddDialog) {
+        AddAthleteDialog(
+            onDismiss = { showAddDialog = false },
+            onAddAthlete = { name, position, stats, email ->
+                val newId = athletes.maxOfOrNull { it.id }?.plus(1) ?: 1
+                val newAthlete = Athlete(newId, name, position, stats, R.drawable.john_smith, email)
+                athletes = athletes + newAthlete
+                showAddDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun AddAthleteDialog(
+    onDismiss: () -> Unit,
+    onAddAthlete: (String, String, String, String) -> Unit
+) {
+    var name by remember { mutableStateOf("") }
+    var position by remember { mutableStateOf("") }
+    var stats by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New Athlete") },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = position,
+                    onValueChange = { position = it },
+                    label = { Text("Position") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = stats,
+                    onValueChange = { stats = it },
+                    label = { Text("Stats") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (name.isNotBlank() && position.isNotBlank() && stats.isNotBlank() && email.isNotBlank()) {
+                        onAddAthlete(name, position, stats, email)
+                    }
+                }
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable
 fun AthleteCard(
     athlete: Athlete,
+    context: android.content.Context,
     onEditAthlete: (Athlete) -> Unit,
-    onContactAthlete: () -> Unit,
     onDeleteAthlete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -236,21 +294,27 @@ fun AthleteCard(
             ) {
                 IconButton(onClick = { isEditing = !isEditing }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_edit),
+                        imageVector = Icons.Default.Edit,
                         contentDescription = "Edit",
                         tint = Color.Gray
                     )
                 }
-                IconButton(onClick = onContactAthlete) {
+                IconButton(onClick = {
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:${athlete.email}")
+                        putExtra(Intent.EXTRA_SUBJECT, "Contacting ${athlete.name}")
+                    }
+                    context.startActivity(Intent.createChooser(intent, "Send Email"))
+                }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_email),
+                        imageVector = Icons.Default.Email,
                         contentDescription = "Contact",
                         tint = Color.Gray
                     )
                 }
                 IconButton(onClick = { showDeleteDialog = true }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
+                        imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
                         tint = Color.Gray
                     )
