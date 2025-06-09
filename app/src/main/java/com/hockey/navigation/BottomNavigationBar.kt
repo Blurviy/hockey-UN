@@ -36,6 +36,7 @@ import com.hockey.ui.screens.events.PlayerEventScreen
 import com.hockey.ui.screens.home.HomeScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.settings.SettingsScreen
+import com.hockey.ui.screens.team.PlayerManagementScreen
 import com.hockey.ui.screens.team.TeamScreen
 
 @Composable
@@ -149,14 +150,23 @@ fun ContentScreen(
         }
         "fan" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "fan")
-            1 -> FanEventScreen(navController = NavController(LocalContext.current))
+            1 -> navController.navigate("event_list_fan") // Placeholder for now as the function is yet to be implemented FanEventScreen(navController = NavController(LocalContext.current))
             2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             3 -> SettingsScreen(navController = NavController(LocalContext.current))
         }
         "player" -> when (selectedScreen) {
             0 -> HomeScreen(navController, role = "player")
-            1 -> TeamScreen(navController)
-            2 -> PlayerEventScreen(navController = NavController(LocalContext.current))
+            1 -> PlayerManagementScreen(navController = rememberNavController(), role = "player")
+            2 -> EventScreen(
+                role = "noLogin",
+                onEventClick = { event ->
+                    // Navigate to the details route for this event
+                    navController.navigate("event_details/${event.id}")
+                },
+                onRegisterTeamClick = {}, // No registration for noLogin
+                onAddEventClick = {},
+                navController = NavController(LocalContext.current)
+            ) // PlayerEventScreen(navController = NavController(LocalContext.current))
             3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
             4 -> SettingsScreen(navController = NavController(LocalContext.current))
         }

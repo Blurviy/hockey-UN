@@ -205,8 +205,9 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             TeamScreen(navController)
         }
         composable(AppScreen.PlayerManagement.route) {
-             PlayerManagementScreen(modifier, navController)
+            PlayerManagementScreen(navController = rememberNavController(), role = "manager")
         }
+
         composable(AppScreen.PlayerRegistration.route) {
             PlayerRegistrationScreen(modifier)
         }

@@ -44,7 +44,8 @@ data class Athlete(
 @Composable
 fun PlayerManagementScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    role: String = "player" // Default role is "player", can be "manager" or "admin"
 ) {
     val context = LocalContext.current
     var athletes by remember { mutableStateOf(
@@ -81,16 +82,18 @@ fun PlayerManagementScreen(
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
             )
-            Button(
-                onClick = { showAddDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                modifier = Modifier.height(36.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
-                    contentDescription = "Add Athlete button"
-                )
-                Text("Add Athlete", fontSize = 14.sp)
+            if (role == "manager" || role == "admin") {
+                Button(
+                    onClick = { showAddDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                    modifier = Modifier.height(36.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add),
+                        contentDescription = "Add Athlete button"
+                    )
+                    Text("Add Athlete", fontSize = 14.sp)
+                }
             }
         }
 
@@ -103,6 +106,7 @@ fun PlayerManagementScreen(
                 AthleteCard(
                     athlete = athlete,
                     context = context,
+                    role = role,
                     onEditAthlete = { updatedAthlete ->
                         athletes = athletes.map { if (it.id == updatedAthlete.id) updatedAthlete else it }
                     },
@@ -114,7 +118,7 @@ fun PlayerManagementScreen(
         }
     }
 
-    if (showAddDialog) {
+    if (showAddDialog && (role == "manager" || role == "admin")) {
         AddAthleteDialog(
             onDismiss = { showAddDialog = false },
             onAddAthlete = { name, position, stats, email ->
@@ -194,6 +198,7 @@ fun AddAthleteDialog(
 fun AthleteCard(
     athlete: Athlete,
     context: android.content.Context,
+    role: String,
     onEditAthlete: (Athlete) -> Unit,
     onDeleteAthlete: () -> Unit,
     modifier: Modifier = Modifier
@@ -224,11 +229,11 @@ fun AthleteCard(
             Spacer(modifier = Modifier.width(8.dp))
 
             // Athlete details or edit fields
-            if (isEditing) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(if (isEditing) 8.dp else 4.dp)
+            ) {
+                if (isEditing) {
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
@@ -269,12 +274,7 @@ fun AthleteCard(
                             Text("Save")
                         }
                     }
-                }
-            } else {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                } else {
                     Text(
                         text = athlete.name,
                         style = MaterialTheme.typography.titleMedium,
@@ -292,12 +292,14 @@ fun AthleteCard(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(onClick = { isEditing = !isEditing }) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        tint = Color.Gray
-                    )
+                if (role == "manager" || role == "admin") {
+                    IconButton(onClick = { isEditing = !isEditing }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = Color.Gray
+                        )
+                    }
                 }
                 IconButton(onClick = {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -312,19 +314,21 @@ fun AthleteCard(
                         tint = Color.Gray
                     )
                 }
-                IconButton(onClick = { showDeleteDialog = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
-                        tint = Color.Gray
-                    )
+                if (role == "manager" || role == "admin") {
+                    IconButton(onClick = { showDeleteDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.Gray
+                        )
+                    }
                 }
             }
         }
     }
 
-    // Delete confirmation dialog
-    if (showDeleteDialog) {
+    // Delete confirmation dialog visible only to manager or admin
+    if (showDeleteDialog && (role == "manager" || role == "admin")) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Confirm Delete") },
@@ -352,6 +356,6 @@ fun AthleteCard(
 @Composable
 fun PlayerManagementScreenPreview() {
     HockeyTheme {
-        PlayerManagementScreen(navController = rememberNavController())
+        PlayerManagementScreen(navController = rememberNavController(), role = "player") // Preview with player role
     }
 }

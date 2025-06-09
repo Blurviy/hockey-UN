@@ -19,7 +19,7 @@ fun AdminEventScreen(modifier: Modifier = Modifier, navController: NavController
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Player Event Screen",
+            text = "Admin Event Screen",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
