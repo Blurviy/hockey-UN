@@ -3,6 +3,7 @@ package com.hockey.ui.screens.auth
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,17 +18,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.hockey.AppUtil
+import com.hockey.utils.AppUtil
 import com.hockey.R
-
-import com.hockey.ui.screens.Main1Activity
-import com.hockey.ui.screens.auth.SignupActivity
+import com.hockey.navigation.AppScreen
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.ui.viewmodels.AuthViewModel
+import com.hockey.utils.RoleButton
 
 @Composable
-fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = viewModel(),
-   ) {
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel(),
+) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -41,9 +43,9 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
     ) {
         // Icon
         Image(
-            painter = painterResource(id = R.drawable.ic_trophy),
+            painter = painterResource(id = R.drawable.nhu_logo),
             contentDescription = "Trophy Icon",
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(240.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,7 +75,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_email),
-                    contentDescription = "Email Icons",
+                    contentDescription = "Email Icon",
                     modifier = Modifier.size(24.dp)
                 )
             },
@@ -100,16 +102,17 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         // Login Button
         Button(
             onClick = {
-                authViewModel.login(email, password){
-                        success,errorMessage ->
-                    if(success){
-                    context.startActivity(Intent(context, Main1Activity::class.java))
-                    navController.navigate("home")
-                }else{
-                    AppUtil.showToast(context , message = errorMessage?:"something went wrong")
+                authViewModel.login(email, password) { success, errorMessage ->
+                    if (success) {
+                        // navController.navigate("home")
+                        navController.navigate("fan_main") {
+                            popUpTo("auth") { inclusive = true }
+                        }
+                    } else {
+                        // println("Login failed: $errorMessage")
+                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
+                    }
                 }
-                }
-
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,11 +127,12 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
             Spacer(modifier = Modifier.width(8.dp))
             Text("Login")
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         // Register Button
         Button(
-            onClick = { context.startActivity(Intent(context, SignupActivity::class.java)) },
+            onClick = { navController.navigate(AppScreen.Signup.route) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -148,7 +152,7 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
         TextButton(
             onClick = { /* Handle forgot password */ },
             modifier = Modifier.fillMaxWidth()
-            ) {
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_lock_reset),
                 contentDescription = "Forgot Password Icon",
@@ -158,18 +162,59 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
             Text("Forgot Password?", color = Color.Blue)
         }
 
-        // Continue as Guest
-        TextButton(
-            onClick = { context.startActivity(Intent(context, Main1Activity::class.java)) },
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Role-specific Login Options
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
+                .align(alignment = Alignment.CenterHorizontally)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_person_add),
-                contentDescription = "Home icon",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Continue to App", color = Color.Blue)
+            item {
+                RoleButton(
+                    label = "Continue as Guest",
+                    iconRes = R.drawable.ic_person_add,
+                    color = Color.Blue
+                ) {
+                    navController.navigate(AppScreen.NoLoginMain.route)
+                }
+            }
+//            item {
+//                RoleButton(
+//                    label = "Manager Login",
+//                    iconRes = R.drawable.ic_person,
+//                    color = Color.Green
+//                ) {
+//                    navController.navigate("managerMain")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Fan Login",
+//                    iconRes = R.drawable.ic_star,
+//                    color = Color.Magenta
+//                ) {
+//                    navController.navigate("fanMain")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Player Login",
+//                    iconRes = R.drawable.ic_sports,
+//                    color = Color.Red
+//                ) {
+//                    navController.navigate("playerMain")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Admin Login",
+//                    iconRes = R.drawable.ic_admin,
+//                    color = Color.Gray
+//                ) {
+//                    navController.navigate("adminMain")
+//                }
+//            }
         }
     }
 }
@@ -178,6 +223,6 @@ fun LoginScreen(navController: NavController,authViewModel: AuthViewModel = view
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen(NavController(LocalContext.current))
+        LoginScreen(navController = NavController(LocalContext.current))
     }
 }

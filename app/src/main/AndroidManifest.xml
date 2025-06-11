@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -27,25 +26,14 @@
         </activity>
 
         <!-- TeamRegistrationActivity -->
-        <activity android:name=".ui.screens.team.TeamRegistrationActivity" />
+        <activity android:name=".ui.screens.TeamRegistrationActivity" />
 
         <!-- PlayerManagementActivity -->
-        <activity android:name=".ui.screens.team.PlayerManagementActivity" />
+        <activity android:name=".ui.screens.PlayerManagementActivity" />
 
         <!-- PlayerRegistrationActivity -->
-        <activity android:name=".ui.screens.team.PlayerRegistrationActivity" />
-
-        <!-- LoginActivity -->
-        <activity android:name=".ui.screens.auth.LoginActivity" />
-
-        <!-- SignupActivity -->
-        <activity android:name=".ui.screens.auth.SignupActivity" />
-
-        <!-- com.hockey.ui.screens.Main1Activity -->
-        <activity android:name=".ui.screens.Main1Activity" />
+        <activity android:name=".ui.screens.PlayerRegistrationActivity" />
 
     </application>
-
-
 
 </manifest>

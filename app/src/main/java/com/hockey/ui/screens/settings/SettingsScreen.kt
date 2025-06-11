@@ -6,12 +6,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.hockey.ui.theme.HockeyTheme
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) {
     // States to manage settings options
     var isDarkMode by remember { mutableStateOf(false) }
     var isNotificationsEnabled by remember { mutableStateOf(true) }
@@ -27,7 +30,6 @@ fun SettingsScreen() {
             text = "Settings",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Start)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -46,7 +48,7 @@ fun SettingsScreen() {
         SettingsOption(
             label = "Enable Notifications",
             description = "Turn on/off notifications",
-            isChecked = isNotificationsEnabled,
+            isChecked = true,
             onCheckedChange = { isNotificationsEnabled = it }
         )
 
@@ -135,5 +137,7 @@ fun SettingsOption(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen()
+    HockeyTheme {
+        SettingsScreen(navController = NavController(LocalContext.current))
+    }
 }

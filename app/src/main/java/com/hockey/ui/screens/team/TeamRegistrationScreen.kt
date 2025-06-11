@@ -14,10 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hockey.ui.theme.HockeyTheme
+import kotlin.collections.plus
 
 data class Team(
     val id: Int,
@@ -25,9 +28,8 @@ data class Team(
     var mobileNumber: String = ""
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamRegistrationScreen() {
+fun TeamRegistrationScreen(modifier: Modifier = Modifier) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }

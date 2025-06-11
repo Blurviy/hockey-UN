@@ -1,25 +1,22 @@
 package com.hockey.ui.screens.team
 
-import android.content.Intent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hockey.ui.theme.HockeyTheme
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun TeamManagementScreen(context: Context) {
+fun TeamScreen(navController: NavController, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -31,15 +28,15 @@ fun TeamManagementScreen(context: Context) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Cards for navigation
+        // Cards with text buttons
         ActivityCard("Player Management") {
-            context.startActivity(Intent(context, PlayerManagementActivity::class.java))
+            navController.navigate("player_management")
         }
         ActivityCard("Player Registration") {
-            context.startActivity(Intent(context, PlayerRegistrationActivity::class.java))
+            navController.navigate("player_registration")
         }
         ActivityCard("Team Registration") {
-            context.startActivity(Intent(context, TeamRegistrationActivity::class.java))
+            navController.navigate("team_registration")
         }
     }
 }
@@ -52,23 +49,17 @@ fun ActivityCard(title: String, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() }
     ) {
-        Column(
+        TextButton(
+            onClick = onClick,
             modifier = Modifier
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Text(
                 text = title,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "Click for more details",
-                fontSize = 12.sp,
-                color = Color.Gray
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -76,8 +67,8 @@ fun ActivityCard(title: String, onClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun TeamManagementScreenPreview() {
+fun TeamScreenPreview() {
     HockeyTheme {
-        TeamManagementScreen(context = LocalContext.current)
+        TeamScreen(navController = rememberNavController())
     }
 }

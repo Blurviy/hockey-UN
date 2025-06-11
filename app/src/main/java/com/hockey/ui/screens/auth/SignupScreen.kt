@@ -1,7 +1,7 @@
 package com.hockey.ui.screens.auth
 
-import android.R.attr.text
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,32 +11,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.hockey.AppUtil
+import com.hockey.utils.AppUtil
 import com.hockey.R
-import com.hockey.ui.screens.Main1Activity
 import com.hockey.ui.viewmodels.AuthViewModel
-// import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 @Composable
 fun SignupScreen(
-    navController: NavController,authViewModel: AuthViewModel = viewModel(),
-
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var context= LocalContext.current
-
-
-    // Handle successful signup
-
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -45,6 +39,14 @@ fun SignupScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Icon
+        Image(
+            painter = painterResource(id = R.drawable.nhu_logo),
+            contentDescription = "Trophy Icon",
+            modifier = Modifier.size(240.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Create Account",
             fontSize = 24.sp,
@@ -53,45 +55,37 @@ fun SignupScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Name Input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             label = { Text("Full Name") },
-            modifier = Modifier.fillMaxWidth(),
-
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Email Input
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
-
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password Input
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Confirm Password Input
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             label = { Text("Confirm Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-
             isError = confirmPassword.isNotEmpty() && password != confirmPassword
         )
 
@@ -105,45 +99,39 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Error message
-
-        // Sign Up Button
         Button(
             onClick = {
-                authViewModel.signup(email, name, password){
-                        success,errorMessage->
-                    if(success){
-                        context.startActivity(Intent(context, Main1Activity::class.java))
-                        navController.navigate("home"){ // Assuming "home" is your route for the home screen
-                            popUpTo("auth"){inclusive=true}
+                authViewModel.signup(email, name, password) { success, errorMessage ->
+                    if (success) {
+                        navController.navigate("fan_main") {
+                            popUpTo("auth") { inclusive = true }
                         }
-                    }else{
-                        AppUtil.showToast(context , message = errorMessage?:"something went wrong")
+                    } else {
+                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
                     }
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) {
-Text("signup", fontSize = 20.sp)
-
+            Text("Sign Up", fontSize = 20.sp)
         }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Back to Login Button
-//        TextButton(
-//            onClick = onBackToLogin,
-//
-//        ) {
-//            Text("Already have an account? Login")
-//        }
 
         Spacer(modifier = Modifier.height(8.dp))
-        // Continue as Guest
+
         TextButton(
-            onClick = {  },
+            onClick = { navController.navigate("login") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Already have an account? Login", color = Color.Blue)
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = { navController.navigate("home") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -154,11 +142,11 @@ Text("signup", fontSize = 20.sp)
             Spacer(modifier = Modifier.width(8.dp))
             Text("Continue to App", color = Color.Blue)
         }
-
-    }}
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(navController = NavController(LocalContext.current)) // Your current approach is also fine
+    SignupScreen(navController = NavController(LocalContext.current))
 }
