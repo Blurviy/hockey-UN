@@ -179,42 +179,42 @@ fun LoginScreen(
                     navController.navigate(AppScreen.NoLoginMain.route)
                 }
             }
-//            item {
-//                RoleButton(
-//                    label = "Manager Login",
-//                    iconRes = R.drawable.ic_person,
-//                    color = Color.Green
-//                ) {
-//                    navController.navigate("managerMain")
-//                }
-//            }
-//            item {
-//                RoleButton(
-//                    label = "Fan Login",
-//                    iconRes = R.drawable.ic_star,
-//                    color = Color.Magenta
-//                ) {
-//                    navController.navigate("fanMain")
-//                }
-//            }
-//            item {
-//                RoleButton(
-//                    label = "Player Login",
-//                    iconRes = R.drawable.ic_sports,
-//                    color = Color.Red
-//                ) {
-//                    navController.navigate("playerMain")
-//                }
-//            }
-//            item {
-//                RoleButton(
-//                    label = "Admin Login",
-//                    iconRes = R.drawable.ic_admin,
-//                    color = Color.Gray
-//                ) {
-//                    navController.navigate("adminMain")
-//                }
-//            }
+            item {
+                RoleButton(
+                    label = "Manager Login",
+                    iconRes = R.drawable.ic_person,
+                    color = Color.Green
+                ) {
+                    navController.navigate("manager_main")
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Fan Login",
+                    iconRes = R.drawable.ic_star,
+                    color = Color.Magenta
+                ) {
+                    navController.navigate("fan_main")
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Player Login",
+                    iconRes = R.drawable.ic_sports,
+                    color = Color.Red
+                ) {
+                    navController.navigate("player_main")
+                }
+            }
+            item {
+                RoleButton(
+                    label = "Admin Login",
+                    iconRes = R.drawable.ic_admin,
+                    color = Color.Gray
+                ) {
+                    navController.navigate("admin_main")
+                }
+            }
         }
     }
 }

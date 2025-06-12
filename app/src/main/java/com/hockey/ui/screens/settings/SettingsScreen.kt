@@ -1,5 +1,6 @@
 package com.hockey.ui.screens.settings
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -14,10 +15,15 @@ import androidx.navigation.NavController
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) {
-    // States to manage settings options
-    var isDarkMode by remember { mutableStateOf(false) }
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    isDarkMode: Boolean,
+    onThemeChange: (Boolean) -> Unit
+) {
+    var isDarkMode by remember { mutableStateOf(isDarkMode) }
     var isNotificationsEnabled by remember { mutableStateOf(true) }
+    var allowBackgroundData by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("John Doe") }
 
     Column(
@@ -36,10 +42,10 @@ fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) 
 
         // Dark Mode Switch
         SettingsOption(
-            label = "Enable Dark Mode",
+            label = "Switch Theme",
             description = "Switch between light and dark theme",
-            isChecked = isDarkMode,
-            onCheckedChange = { isDarkMode = it }
+            buttonLabel = if (isDarkMode) "Switch to Light" else "Switch to Dark",
+            onButtonClick = { isDarkMode = !isDarkMode }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -48,25 +54,35 @@ fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) 
         SettingsOption(
             label = "Enable Notifications",
             description = "Turn on/off notifications",
-            isChecked = true,
-            onCheckedChange = { isNotificationsEnabled = it }
+            buttonLabel = if (isNotificationsEnabled) "Disable" else "Enable",
+            onButtonClick = { isNotificationsEnabled = !isNotificationsEnabled }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // User Name Edit
+        // Allow Background Data Switch
         SettingsOption(
-            label = "Username",
-            description = "Change your username",
-            content = {
-                OutlinedTextField(
-                    value = userName,
-                    onValueChange = { userName = it },
-                    label = { Text("Enter new username") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            label = "Allow Background Data",
+            description = "Enable or disable background data usage",
+            buttonLabel = if (allowBackgroundData) "Disable" else "Enable",
+            onButtonClick = { allowBackgroundData = !allowBackgroundData }
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+//        // User Name Edit
+//        SettingsOption(
+//            label = "Username",
+//            description = "Change your username",
+//            content = {
+//                OutlinedTextField(
+//                    value = userName,
+//                    onValueChange = { userName = it },
+//                    label = { Text("Enter new username") },
+//                    modifier = Modifier.fillMaxWidth()
+//                )
+//            }
+//        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -86,14 +102,13 @@ fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) 
 fun SettingsOption(
     label: String,
     description: String,
-    isChecked: Boolean = false,
-    onCheckedChange: (Boolean) -> Unit = {},
+    buttonLabel: String,
+    onButtonClick: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.fillMaxWidth(),
-        //elevation = CardDefaults.elevation(4.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
@@ -114,30 +129,42 @@ fun SettingsOption(
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            // Optionally display switch or content
-            Spacer(modifier = Modifier.height(12.dp))
+            // Optionally display additional content
+            if (content != {}) {
+                Spacer(modifier = Modifier.height(12.dp))
+                content()
+            }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            // Button
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = onButtonClick,
+                modifier = Modifier.align(Alignment.End)
             ) {
-                if (content != {}) {
-                    content() // Custom content (e.g., text field for user input)
-                } else {
-                    Switch(
-                        checked = isChecked,
-                        onCheckedChange = onCheckedChange
-                    )
-                }
+                Text(text = buttonLabel)
             }
         }
+    }
+}
+
+
+@Composable
+fun Settings() {
+    val isSystemDarkTheme = isSystemInDarkTheme() // Detect system theme
+    var isDarkMode by remember { mutableStateOf(isSystemDarkTheme) }
+
+    HockeyTheme(darkTheme = isDarkMode) {
+        SettingsScreen(
+            navController = NavController(LocalContext.current),
+            isDarkMode = isDarkMode,
+            onThemeChange = { isDarkMode = it } // Update theme state
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    HockeyTheme {
-        SettingsScreen(navController = NavController(LocalContext.current))
-    }
+    Settings()
 }
+

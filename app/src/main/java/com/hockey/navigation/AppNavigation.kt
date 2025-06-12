@@ -20,6 +20,7 @@ import com.hockey.ui.screens.events.ManagerEventScreen
 import com.hockey.ui.screens.events.PlayerEventScreen
 import com.hockey.ui.screens.news.NewsAndUpdateScreen
 import com.hockey.ui.screens.news.NewsCreationScreen
+import com.hockey.ui.screens.settings.Settings
 import com.hockey.ui.screens.settings.SettingsScreen
 import com.hockey.ui.screens.team.ActiveTeamsScreen
 import com.hockey.ui.screens.team.MessagesScreen
@@ -228,7 +229,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
 
         // Settings
         composable(AppScreen.Settings.route) {
-            SettingsScreen(modifier, navController)
+            Settings()
         }
 
         // Messages
