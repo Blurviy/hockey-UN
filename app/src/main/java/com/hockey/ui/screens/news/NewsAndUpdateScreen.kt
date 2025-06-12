@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -110,20 +111,21 @@ val newsList = listOf(
 )
 
 @Composable
-fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavController, role: String = "user") {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     var showWebView by remember { mutableStateOf(false) }
     var currentUrl by remember { mutableStateOf("") }
+    var showAddNewsDialog by remember { mutableStateOf(false) } // For add news dialog
     val context = LocalContext.current
+    val newsListState = remember { mutableStateListOf(*newsList.toTypedArray()) } // Mutable list for news
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(8.dp) // Add padding for overall layout
+            .padding(8.dp)
     ) {
         if (showWebView) {
-            // Back button for WebView
             IconButton(
                 onClick = { showWebView = false },
                 modifier = Modifier
@@ -133,14 +135,12 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavControl
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
 
-            // WebView display
             WebViewScreen(url = currentUrl)
         } else {
-            // News list with Back button and DropDown
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp), // Vertical padding to separate from the list
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -151,29 +151,21 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavControl
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
 
-                // DropDown
                 AppDropDown(
                     menuItems = listOf(
-                        Triple("Recent", Icons.Default.Update) {
-                            // Handle navigation for recent news
-                        },
-                        Triple("Popular", Icons.Default.ThumbUp) {
-                            // Handle navigation for popular news
-                        },
-                        Triple("Archived", Icons.Default.Archive) {
-                            // Handle navigation for archived news
-                        }
+                        Triple("Recent", Icons.Default.Update) { /* Handle navigation for recent news */ },
+                        Triple("Popular", Icons.Default.ThumbUp) { /* Handle navigation for popular news */ },
+                        Triple("Archived", Icons.Default.Archive) { /* Handle navigation for archived news */ }
                     )
                 )
             }
 
-            // Show the News List
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(top = 8.dp) // Add padding to separate from the header
+                    .padding(top = 8.dp)
             ) {
-                items(newsList) { news ->
+                items(newsListState) { news ->
                     NewsCard(news) {
                         if (news.link != null) {
                             currentUrl = news.link
@@ -186,13 +178,101 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavControl
                 }
             }
 
-            // Show dialog if news is selected
             if (showDialog && selectedNews != null) {
                 NewsDialog(news = selectedNews!!, onDismiss = { showDialog = false })
+            }
+
+            if (showAddNewsDialog) {
+                AddNewsDialog(
+                    onAddNews = { newNews ->
+                        newsListState.add(newNews)
+                        showAddNewsDialog = false
+                    },
+                    onDismiss = { showAddNewsDialog = false }
+                )
+            }
+
+            if (role == "admin") {
+                FloatingActionButton(
+                    onClick = { showAddNewsDialog = true },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(16.dp, bottom = 120.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add News")
+                }
             }
         }
     }
 }
+
+@Composable
+fun AddNewsDialog(onAddNews: (News) -> Unit, onDismiss: () -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var time by remember { mutableStateOf("") }
+    var detailedInfo by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add News") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Title") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = time,
+                    onValueChange = { time = it },
+                    label = { Text("Date/Time") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = detailedInfo,
+                    onValueChange = { detailedInfo = it },
+                    label = { Text("Detailed Info") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onAddNews(
+                        News(
+                            title = title,
+                            description = description,
+                            time = time,
+                            detailedInfo = detailedInfo,
+                            imageRes = R.drawable.default_img, // Use a default image resource
+                            link = null
+                        )
+                    )
+                }
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
 
 
 @Composable
@@ -304,4 +384,10 @@ fun NewsPreview() {
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun AdminNewsPreview() {
+    HockeyTheme {
+        NewsAndUpdateScreen(navController = NavController(LocalContext.current), role = "admin")
+    }
+}

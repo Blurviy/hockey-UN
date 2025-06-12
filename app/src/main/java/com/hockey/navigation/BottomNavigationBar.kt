@@ -1,5 +1,6 @@
 package com.hockey.navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -128,65 +129,76 @@ fun ContentScreen(
     role: String,
     navController: NavController
 ) {
-    when (role) {
-        "noLogin" -> when (selectedScreen) {
-            0 -> HomeScreen(navController, role = "noLogin")
-            1 -> EventScreen(
-                role = "noLogin",
-                onEventClick = { event ->
-                    // Navigate to the details route for this event
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // No registration for noLogin
-                onAddEventClick = {},
-                navController = NavController(LocalContext.current)
-            )
-            2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
-        }
-        "manager" -> when (selectedScreen) {
-            0 -> HomeScreen(navController, role = "manager")
-            1 -> TeamScreen(navController)
-            2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
-            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
-            4 -> Settings()
-        }
-        "fan" -> when (selectedScreen) {
-            0 -> HomeScreen(navController, role = "fan")
-            1 -> EventScreen(
-                role = "noLogin",
-                onEventClick = { event ->
-                    // Navigate to the details route for this event
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // No registration for noLogin
-                onAddEventClick = {},
-                navController = NavController(LocalContext.current)
-            ) // navController.navigate("event_list_fan") // Placeholder for now as the function is yet to be implemented FanEventScreen(navController = NavController(LocalContext.current))
-            2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
-            3 -> Settings()
-        }
-        "player" -> when (selectedScreen) {
-            0 -> HomeScreen(navController, role = "player")
-            1 -> PlayerManagementScreen(navController = rememberNavController(), role = "player")
-            2 -> EventScreen(
-                role = "noLogin",
-                onEventClick = { event ->
-                    // Navigate to the details route for this event
-                    navController.navigate("event_details/${event.id}")
-                },
-                onRegisterTeamClick = {}, // No registration for noLogin
-                onAddEventClick = {},
-                navController = NavController(LocalContext.current)
-            ) // PlayerEventScreen(navController = NavController(LocalContext.current))
-            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
-            4 -> Settings()
-        }
-        "admin" -> when (selectedScreen) {
-            0 -> HomeScreen(navController, role = "admin")
-            1 -> AdminTeamScreen(navController = navController)
-            2 -> AdminEventScreen(navController = NavController(LocalContext.current))
-            3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
-            4 -> Settings()
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (role) {
+            "noLogin" -> when (selectedScreen) {
+                0 -> HomeScreen(navController, role = "noLogin")
+                1 -> EventScreen(
+                    role = "noLogin",
+                    onEventClick = { event ->
+                        // Navigate to the details route for this event
+                        navController.navigate("event_details/${event.id}")
+                    },
+                    onRegisterTeamClick = {}, // No registration for noLogin
+                    onAddEventClick = {},
+                    navController = NavController(LocalContext.current)
+                )
+
+                2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+            }
+
+            "manager" -> when (selectedScreen) {
+                0 -> HomeScreen(navController, role = "manager")
+                1 -> TeamScreen(navController)
+                2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
+                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                4 -> Settings()
+            }
+
+            "fan" -> when (selectedScreen) {
+                0 -> HomeScreen(navController, role = "fan")
+                1 -> EventScreen(
+                    role = "noLogin",
+                    onEventClick = { event ->
+                        // Navigate to the details route for this event
+                        navController.navigate("event_details/${event.id}")
+                    },
+                    onRegisterTeamClick = {}, // No registration for noLogin
+                    onAddEventClick = {},
+                    navController = NavController(LocalContext.current)
+                ) // navController.navigate("event_list_fan") // Placeholder for now as the function is yet to be implemented FanEventScreen(navController = NavController(LocalContext.current))
+                2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                3 -> Settings()
+            }
+
+            "player" -> when (selectedScreen) {
+                0 -> HomeScreen(navController, role = "player")
+                1 -> PlayerManagementScreen(
+                    navController = rememberNavController(),
+                    role = "player"
+                )
+
+                2 -> EventScreen(
+                    role = "noLogin",
+                    onEventClick = { event ->
+                        // Navigate to the details route for this event
+                        navController.navigate("event_details/${event.id}")
+                    },
+                    onRegisterTeamClick = {}, // No registration for noLogin
+                    onAddEventClick = {},
+                    navController = NavController(LocalContext.current)
+                ) // PlayerEventScreen(navController = NavController(LocalContext.current))
+                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                4 -> Settings()
+            }
+
+            "admin" -> when (selectedScreen) {
+                0 -> HomeScreen(navController, role = "admin")
+                1 -> AdminTeamScreen(navController = navController)
+                2 -> AdminEventScreen(navController = NavController(LocalContext.current))
+                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current), role = "admin`````")
+                4 -> Settings()
+            }
         }
     }
 }
