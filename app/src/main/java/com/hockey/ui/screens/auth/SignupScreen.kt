@@ -21,6 +21,7 @@ import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.ui.viewmodels.AuthViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignupScreen(
     navController: NavController,
@@ -30,7 +31,11 @@ fun SignupScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var selectedRole by remember { mutableStateOf("fan") } // Default role
+    var isRoleMenuExpanded by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val roles = listOf("fan", "manager", "player", "admin")
 
     Column(
         modifier = Modifier
@@ -55,6 +60,7 @@ fun SignupScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Name Input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -63,6 +69,7 @@ fun SignupScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Email Credentials entry
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -71,6 +78,7 @@ fun SignupScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Password
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -99,24 +107,81 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Role Selection Dropdown
+        ExposedDropdownMenuBox(
+            expanded = isRoleMenuExpanded,
+            onExpandedChange = { isRoleMenuExpanded = !isRoleMenuExpanded }
+        ) {
+            OutlinedTextField(
+                value = selectedRole,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Role") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isRoleMenuExpanded)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = isRoleMenuExpanded,
+                onDismissRequest = { isRoleMenuExpanded = false }
+            ) {
+                roles.forEach { role ->
+                    DropdownMenuItem(
+                        text = { Text(role) },
+                        onClick = {
+                            selectedRole = role
+                            isRoleMenuExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Sign Up Button
         Button(
             onClick = {
-                authViewModel.signup(email, name, password) { success, errorMessage ->
+                isLoading = true
+                if (password != confirmPassword) {
+                    AppUtil.showToast(context, "Passwords do not match")
+                    isLoading = false
+                    return@Button
+                }
+                authViewModel.signup(email, name, password, selectedRole) { success, errorMessage ->
+                    isLoading = false
                     if (success) {
-                        navController.navigate("fan_main") {
+                        val route = when (selectedRole) {
+                            "fan" -> "fan_main"
+                            "manager" -> "manager_main"
+                            "player" -> "player_main"
+                            "admin" -> "admin_main"
+                            else -> "fan_main" // Fallback
+                        }
+                        navController.navigate(route) {
                             popUpTo("auth") { inclusive = true }
                         }
                     } else {
-                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
+                        AppUtil.showToast(context, errorMessage ?: "Something went wrong")
                     }
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
+            enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) {
-            Text("Sign Up", fontSize = 20.sp)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text("Sign Up", fontSize = 20.sp)
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -100,17 +100,26 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Login Button
+        var isLoading by remember { mutableStateOf(false) }
         Button(
             onClick = {
-                authViewModel.login(email, password) { success, errorMessage ->
-                    if (success) {
-                        // navController.navigate("home")
-                        navController.navigate("fan_main") {
+                isLoading = true
+                authViewModel.login(email, password) { success, role, errorMessage ->
+                    isLoading = false
+                    if (success && role != null) {
+                        // Navigate based on authenticated role
+                        val route = when (role) {
+                            "fan" -> "fan_main"
+                            "manager" -> "manager_main"
+                            "player" -> "player_main"
+                            "admin" -> "admin_main"
+                            else -> "fan_main" // Fallback route
+                        }
+                        navController.navigate(route) {
                             popUpTo("auth") { inclusive = true }
                         }
                     } else {
-                        // println("Login failed: $errorMessage")
-                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
+                        AppUtil.showToast(context, errorMessage ?: "Something went wrong")
                     }
                 }
             },
@@ -119,13 +128,17 @@ fun LoginScreen(
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_login),
-                contentDescription = "Login Icon",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Login")
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            } else {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_login),
+                    contentDescription = "Login Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Login")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -167,7 +180,8 @@ fun LoginScreen(
         // Role-specific Login Options
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
             item {
@@ -177,44 +191,45 @@ fun LoginScreen(
                     color = Color.Blue
                 ) {
                     navController.navigate(AppScreen.NoLoginMain.route)
+                    // popUpTo("auth") { inclusive = true }
                 }
             }
-            item {
-                RoleButton(
-                    label = "Manager Login",
-                    iconRes = R.drawable.ic_person,
-                    color = Color.Green
-                ) {
-                    navController.navigate("manager_main")
-                }
-            }
-            item {
-                RoleButton(
-                    label = "Fan Login",
-                    iconRes = R.drawable.ic_star,
-                    color = Color.Magenta
-                ) {
-                    navController.navigate("fan_main")
-                }
-            }
-            item {
-                RoleButton(
-                    label = "Player Login",
-                    iconRes = R.drawable.ic_sports,
-                    color = Color.Red
-                ) {
-                    navController.navigate("player_main")
-                }
-            }
-            item {
-                RoleButton(
-                    label = "Admin Login",
-                    iconRes = R.drawable.ic_admin,
-                    color = Color.Gray
-                ) {
-                    navController.navigate("admin_main")
-                }
-            }
+//            item {
+//                RoleButton(
+//                    label = "Manager Login",
+//                    iconRes = R.drawable.ic_person,
+//                    color = Color.Green
+//                ) {
+//                    navController.navigate("manager_main")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Fan Login",
+//                    iconRes = R.drawable.ic_star,
+//                    color = Color.Magenta
+//                ) {
+//                    navController.navigate("fan_main")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Player Login",
+//                    iconRes = R.drawable.ic_sports,
+//                    color = Color.Red
+//                ) {
+//                    navController.navigate("player_main")
+//                }
+//            }
+//            item {
+//                RoleButton(
+//                    label = "Admin Login",
+//                    iconRes = R.drawable.ic_admin,
+//                    color = Color.Gray
+//                ) {
+//                    navController.navigate("admin_main")
+//                }
+//            }
         }
     }
 }
