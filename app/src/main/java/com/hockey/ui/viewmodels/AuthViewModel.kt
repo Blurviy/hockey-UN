@@ -24,10 +24,10 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val userId = task.result?.user?.uid
-                    if (userId != null) {
+                    val uid = task.result?.user?.uid
+                    if (uid != null) {
                         // Fetch user role from Firestore
-                        firestore.collection("users").document(userId)
+                        firestore.collection("users").document(uid)
                             .get()
                             .addOnSuccessListener { document ->
                                 val userModel = document.toObject(UserModel::class.java)
@@ -65,10 +65,10 @@ class AuthViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val userId = task.result?.user?.uid
-                    if (userId != null) {
-                        val userModel = UserModel(name, email, userId, role)
-                        firestore.collection("users").document(userId)
+                    val uid = task.result?.user?.uid
+                    if (uid != null) {
+                        val userModel = UserModel(name, email, uid, role)
+                        firestore.collection("users").document(uid)
                             .set(userModel)
                             .addOnCompleteListener { dbTask ->
                                 if (dbTask.isSuccessful) {

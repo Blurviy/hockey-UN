@@ -33,6 +33,7 @@ fun LoginScreen(
 ) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Column(
@@ -45,7 +46,7 @@ fun LoginScreen(
         // Icon
         Image(
             painter = painterResource(id = R.drawable.nhu_logo),
-            contentDescription = "Trophy Icon",
+            contentDescription = "Logo for NHU",
             modifier = Modifier.size(240.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -101,23 +102,18 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Login Button
-        var isLoading by remember { mutableStateOf(false) }
         Button(
             onClick = {
                 isLoading = true
                 authViewModel.login(email, password) { success, role, errorMessage ->
                     isLoading = false
                     if (success && role != null) {
-                        // Navigate based on authenticated role
-                        val route = when (role) {
-                            "fan" -> "fan_main"
-                            "manager" -> "manager_main"
-                            "player" -> "player_main"
-                            "admin" -> "admin_main"
-                            else -> "fan_main" // Fallback route
-                        }
-                        navController.navigate(route) {
-                            popUpTo("auth") { inclusive = true }
+                        when (role) {
+                            "fan" -> navController.navigate(AppScreen.FanMain.route)
+                            "manager" -> navController.navigate(AppScreen.ManagerMain.route)
+                            "player" -> navController.navigate(AppScreen.PlayerMain.route)
+                            "admin" -> navController.navigate(AppScreen.AdminMain.route)
+                            else -> navController.navigate(AppScreen.FanMain.route) // Fallback route
                         }
                     } else {
                         AppUtil.showToast(context, errorMessage ?: "Something went wrong")
@@ -130,15 +126,22 @@ fun LoginScreen(
             colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) {
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             } else {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_login),
-                    contentDescription = "Login Icon",
-                    modifier = Modifier.size(24.dp)
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Login")
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onPrimary)
+                )
             }
         }
 

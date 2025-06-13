@@ -111,7 +111,7 @@ fun SignupScreen(
         // Role Selection Dropdown
         ExposedDropdownMenuBox(
             expanded = isRoleMenuExpanded,
-            onExpandedChange = { isRoleMenuExpanded = !isRoleMenuExpanded }
+             onExpandedChange = { isRoleMenuExpanded = !isRoleMenuExpanded }
         ) {
             OutlinedTextField(
                 value = selectedRole,
