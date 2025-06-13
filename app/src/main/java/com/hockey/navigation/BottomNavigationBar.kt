@@ -196,7 +196,7 @@ fun ContentScreen(
                 0 -> HomeScreen(navController, role = "admin")
                 1 -> AdminTeamScreen(navController = navController)
                 2 -> AdminEventScreen(navController = rememberNavController())
-                3 -> NewsAndUpdateScreen(navController = rememberNavController(), role = "admin`````")
+                3 -> NewsAndUpdateScreen(navController = rememberNavController(), role = "admin")
                 4 -> Settings()
             }
         }
