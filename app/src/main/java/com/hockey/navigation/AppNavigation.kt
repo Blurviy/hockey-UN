@@ -217,7 +217,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             TeamRegistrationScreen()
         }
         composable(AppScreen.ActiveTeams.route) {
-            ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = navController)
+            ActiveTeamsScreen<Any?>(modifier = Modifier, teams = mockTeams,navController = navController)
         }
 
         // News Screens

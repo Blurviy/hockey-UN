@@ -26,16 +26,16 @@ data class HockeyTeam(
 
 // Mock team list
 val mockTeams = listOf(
-    HockeyTeam("Falcon Warriors", "New York", 15, 3, true),
-    HockeyTeam("Thunder Wolves", "Chicago", 12, 5, true),
-    HockeyTeam("Ice Breakers", "Toronto", 10, 7, true),
-    HockeyTeam("Blaze Hunters", "Dallas", 18, 1, true),
-    HockeyTeam("Shadow Panthers", "Los Angeles", 8, 10, true)
+    HockeyTeam("Nust Hockey Team", "Windhoek", 15, 3, true),
+    HockeyTeam("Thunder Wolves", "Windhoek", 12, 5, true),
+    HockeyTeam("Ice Breakers", "windhoek", 10, 7, true),
+    HockeyTeam("Blaze Hunters", "Windhoek", 8, 7, true),
+    HockeyTeam("Shadow Panthers", "Windhoek", 8, 10, true)
 )
 
 // Main ActiveTeamsScreen composable
 @Composable
-fun ActiveTeamsScreen(teams: List<HockeyTeam>, modifier: Modifier = Modifier, navController: NavController) {
+fun <T> ActiveTeamsScreen(teams: List<HockeyTeam>, modifier: Modifier = Modifier, navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -107,5 +107,5 @@ fun TeamCard(team: HockeyTeam) {
 @Preview(showBackground = true)
 @Composable
 fun ActiveTeamsScreenPreview() {
-    ActiveTeamsScreen(teams = mockTeams, navController = NavController(LocalContext.current))
+    ActiveTeamsScreen<Any>(teams = mockTeams, navController = NavController(LocalContext.current))
 }

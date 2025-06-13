@@ -189,9 +189,10 @@ fun LoginScreen(
                     iconRes = R.drawable.ic_person,
                     color = Color.Green
                 ) {
-                    navController.navigate("manager_main")
+                    navController.navigate("signup")
                 }
             }
+
             item {
                 RoleButton(
                     label = "Fan Login",
