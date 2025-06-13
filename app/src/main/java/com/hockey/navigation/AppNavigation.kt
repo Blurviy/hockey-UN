@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.hockey.ui.screens.auth.ForgotPasswordScreen
 import com.hockey.ui.screens.auth.LoginScreen
 import com.hockey.ui.screens.auth.SignupScreen
 import com.hockey.ui.screens.events.AdminEventScreen
@@ -216,7 +217,7 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             TeamRegistrationScreen()
         }
         composable(AppScreen.ActiveTeams.route) {
-            ActiveTeamsScreen(modifier = Modifier, teams = mockTeams,navController = navController)
+            ActiveTeamsScreen<Any?>(modifier = Modifier, teams = mockTeams,navController = navController)
         }
 
         // News Screens
@@ -236,6 +237,8 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
         composable(AppScreen.Messages.route) {
             MessagesScreen(modifier, navController)
         }
+
+        composable("forgot_password") { ForgotPasswordScreen(navController) }
     }
 }
 
