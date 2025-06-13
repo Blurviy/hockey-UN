@@ -94,6 +94,17 @@ The **Namibia Hockey Union Mobile Application** (Hockey-UN) is designed to moder
 - **Database**: Firebase.
 - **Version Control**: Git and GitHub.
 
+### Branches
+
+| **Branch**            | **Description**        |
+|---------------------|-----------------|
+| main   | The Branch that is for presentation.       |
+| Retry-from-scratch  | Front-end Reworking   |
+| dtabase-attempts   | Ateempts at using Room database.  |
+| firebaseAttempt2   | The firebase workflow with the frontend from Retry-from-scratch.   |
+| front-end | A separate frontend that uses activities for different view.|
+| restructure  | Front-end restructuring branch. |
+
 ---
 
 ## Installation and Setup
