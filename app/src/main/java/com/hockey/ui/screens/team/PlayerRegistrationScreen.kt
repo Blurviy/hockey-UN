@@ -1,9 +1,6 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.team
 
-import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,27 +9,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hockey.ui.theme.HockeyTheme
 
-data class Team(
+data class Player(
     val id: Int,
     var email: String = "",
     var mobileNumber: String = ""
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamRegistrationScreen() {
+fun PlayerRegistrationScreen(modifier: Modifier = Modifier) {
     var teamName by remember { mutableStateOf("") }
     var managerName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
@@ -41,6 +38,7 @@ fun TeamRegistrationScreen() {
     var passportPhotoUploaded by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -65,66 +63,19 @@ fun TeamRegistrationScreen() {
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.Start
             ) {
+                IconButton(
+                    onClick = {
+                        (context as? ComponentActivity)?.finish()
+                    },
+                    modifier = Modifier.align(Alignment.Start)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+
                 Text(
-                    text = "Team Registration",
+                    text = "Player Registration",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "Team Details",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Team Name",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                OutlinedTextField(
-                    value = teamName,
-                    onValueChange = { teamName = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Manager Name",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                OutlinedTextField(
-                    value = managerName,
-                    onValueChange = { managerName = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Contact Number",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                OutlinedTextField(
-                    value = contactNumber,
-                    onValueChange = { contactNumber = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -262,7 +213,7 @@ fun TeamRegistrationScreen() {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+
 
 
                 Row(
@@ -276,38 +227,38 @@ fun TeamRegistrationScreen() {
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Information",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp)
-                    )
-
-
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-
-                Button(
-                    onClick = {  },
-                    modifier = Modifier
+                    Row( modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        "SUBMIT REGISTRATION",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
+
                     )
+
+                    {
+
+                        Button(
+                            onClick = {  },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                "SUBMIT PLAYER",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                    }
+
                 }
+
+
+
+
 
                   Spacer(modifier = Modifier.height(100.dp))
             }
@@ -317,8 +268,8 @@ fun TeamRegistrationScreen() {
 //guys just increase the preview sizw if you cant see everything working
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
-fun TeamRegistrationScreenPreview() {
+fun PlayerRegistrationScreenPreview() {
     HockeyTheme {
-       TeamRegistrationScreen()
+        PlayerRegistrationScreen()
     }
 }

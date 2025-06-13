@@ -1,4 +1,4 @@
-package com.hockey.ui.screens
+package com.hockey.ui.screens.news
 
 import android.content.Intent
 import android.webkit.WebView
@@ -25,10 +25,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+
+import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.ArrowBack
+
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,8 +53,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
+import com.hockey.utils.AppDropDown
 
 data class News(
     val title: String,
@@ -101,47 +111,61 @@ val newsList = listOf(
 )
 
 @Composable
-fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
+fun NewsAndUpdateScreen(modifier: Modifier = Modifier, navController: NavController, role: String = "user") {
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     var showWebView by remember { mutableStateOf(false) }
     var currentUrl by remember { mutableStateOf("") }
+    var showAddNewsDialog by remember { mutableStateOf(false) } // For add news dialog
     val context = LocalContext.current
+    val newsListState = remember { mutableStateListOf(*newsList.toTypedArray()) } // Mutable list for news
 
-    // Wrap everything in a Column to structure the screen
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
         if (showWebView) {
-            // Back button for WebView
             IconButton(
                 onClick = { showWebView = false },
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.Start)
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
 
-            // WebView display
             WebViewScreen(url = currentUrl)
         } else {
-            // News list with Back button
-            IconButton(
-                onClick = {
-                    (context as? ComponentActivity)?.finish()
-                },
+            Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.Start)
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                IconButton(
+                    onClick = { (context as? ComponentActivity)?.finish() },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                }
+
+                AppDropDown(
+                    menuItems = listOf(
+                        Triple("Recent", Icons.Default.Update) { /* Handle navigation for recent news */ },
+                        Triple("Popular", Icons.Default.ThumbUp) { /* Handle navigation for popular news */ },
+                        Triple("Archived", Icons.Default.Archive) { /* Handle navigation for archived news */ }
+                    )
+                )
             }
 
-
-            // Show the News List
-            LazyColumn(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = 100.dp)) {
-                items(newsList) { news ->
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp)
+            ) {
+                items(newsListState) { news ->
                     NewsCard(news) {
                         if (news.link != null) {
                             currentUrl = news.link
@@ -154,13 +178,102 @@ fun NewsAndUpdateScreen(modifier: Modifier = Modifier) {
                 }
             }
 
-            // Show dialog if news is selected
             if (showDialog && selectedNews != null) {
                 NewsDialog(news = selectedNews!!, onDismiss = { showDialog = false })
+            }
+
+            if (showAddNewsDialog) {
+                AddNewsDialog(
+                    onAddNews = { newNews ->
+                        newsListState.add(newNews)
+                        showAddNewsDialog = false
+                    },
+                    onDismiss = { showAddNewsDialog = false }
+                )
+            }
+
+            if (role == "admin") {
+                FloatingActionButton(
+                    onClick = { showAddNewsDialog = true },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(16.dp, bottom = 120.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add News")
+                }
             }
         }
     }
 }
+
+@Composable
+fun AddNewsDialog(onAddNews: (News) -> Unit, onDismiss: () -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var time by remember { mutableStateOf("") }
+    var detailedInfo by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add News") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Title") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = time,
+                    onValueChange = { time = it },
+                    label = { Text("Date/Time") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = detailedInfo,
+                    onValueChange = { detailedInfo = it },
+                    label = { Text("Detailed Info") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onAddNews(
+                        News(
+                            title = title,
+                            description = description,
+                            time = time,
+                            detailedInfo = detailedInfo,
+                            imageRes = R.drawable.default_img, // Use a default image resource
+                            link = null
+                        )
+                    )
+                }
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+
 
 @Composable
 fun WebViewScreen(url: String) {
@@ -193,27 +306,50 @@ fun NewsCard(news: News, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     onClick()
                 }
             },
-        shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp
+        shape = RoundedCornerShape(8.dp)
     ) {
-
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
             Image(
                 painter = painterResource(id = news.imageRes),
                 contentDescription = news.title,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(60.dp)
+                    .size(80.dp)
+                    .align(Alignment.CenterVertically)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = news.time, style = MaterialTheme.typography.bodySmall)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = news.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = news.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 2
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = news.time,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
+
 
 
 @Composable
@@ -244,8 +380,14 @@ fun NewsDialog(news: News, onDismiss: () -> Unit) {
 @Composable
 fun NewsPreview() {
     HockeyTheme {
-        NewsAndUpdateScreen()
+        NewsAndUpdateScreen(navController = NavController(LocalContext.current))
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun AdminNewsPreview() {
+    HockeyTheme {
+        NewsAndUpdateScreen(navController = NavController(LocalContext.current), role = "admin")
+    }
+}
