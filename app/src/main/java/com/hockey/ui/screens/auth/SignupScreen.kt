@@ -30,6 +30,7 @@ fun SignupScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Column(
@@ -57,7 +58,10 @@ fun SignupScreen(
 
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+                name = it
+                showError = false
+            },
             label = { Text("Full Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -65,7 +69,10 @@ fun SignupScreen(
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                showError = false
+            },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -73,7 +80,10 @@ fun SignupScreen(
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                showError = false
+            },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
@@ -82,7 +92,10 @@ fun SignupScreen(
 
         OutlinedTextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = {
+                confirmPassword = it
+                showError = false
+            },
             label = { Text("Confirm Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
@@ -99,15 +112,28 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        if (showError) {
+            Text(
+                text = "All fields must be filled in",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Button(
             onClick = {
-                authViewModel.signup(email, name, password) { success, errorMessage ->
-                    if (success) {
-                        navController.navigate("fan_main") {
-                            popUpTo("auth") { inclusive = true }
+                if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                    showError = true
+                } else {
+                    authViewModel.signup(email, name, password) { success, errorMessage ->
+                        if (success) {
+                            navController.navigate("fan_main") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        } else {
+                            AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
                         }
-                    } else {
-                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
                     }
                 }
             },
@@ -130,18 +156,7 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextButton(
-            onClick = { navController.navigate("home") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_person_add),
-                contentDescription = "Home icon",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Continue to App", color = Color.Blue)
-        }
+
     }
 }
 

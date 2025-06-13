@@ -102,15 +102,17 @@ fun LoginScreen(
         // Login Button
         Button(
             onClick = {
-                authViewModel.login(email, password) { success, errorMessage ->
-                    if (success) {
-                        // navController.navigate("home")
-                        navController.navigate("fan_main") {
-                            popUpTo("auth") { inclusive = true }
+                if (email.isEmpty() || password.isEmpty()) {
+                    AppUtil.showToast(context, message = "Email and Password must not be empty")
+                } else {
+                    authViewModel.login(email, password) { success, errorMessage ->
+                        if (success) {
+                            navController.navigate("fan_main") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        } else {
+                            AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
                         }
-                    } else {
-                        // println("Login failed: $errorMessage")
-                        AppUtil.showToast(context, message = errorMessage ?: "Something went wrong")
                     }
                 }
             },
@@ -127,6 +129,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Login")
         }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -150,7 +153,7 @@ fun LoginScreen(
 
         // Forgot Password
         TextButton(
-            onClick = { /* Handle forgot password */ },
+            onClick = { navController.navigate("forgot_password") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -161,6 +164,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Forgot Password?", color = Color.Blue)
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
