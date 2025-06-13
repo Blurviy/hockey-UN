@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable
@@ -32,7 +33,7 @@ fun FanEventScreen(
 @Composable
 fun FanEventScreenPreview() {
     HockeyTheme {
-        FanEventScreen(navController = NavController(LocalContext.current))
+        FanEventScreen(navController = rememberNavController())
     }
 }
 

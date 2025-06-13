@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 // HockeyTeam data class
 // It is supposed to be Team, but i changed it because of the errors
@@ -107,5 +108,5 @@ fun TeamCard(team: HockeyTeam) {
 @Preview(showBackground = true)
 @Composable
 fun ActiveTeamsScreenPreview() {
-    ActiveTeamsScreen(teams = mockTeams, navController = NavController(LocalContext.current))
+    ActiveTeamsScreen(teams = mockTeams, navController = rememberNavController())
 }

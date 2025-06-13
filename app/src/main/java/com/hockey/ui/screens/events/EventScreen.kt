@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.utils.AppDropDown
 import com.hockey.utils.FilteredEvents
@@ -369,7 +370,7 @@ fun EventDetailsScreen(
 @Composable
 fun EventScreenPreview() {
     HockeyTheme {
-        EventScreen(role = "manager", navController = NavController(LocalContext.current))
+        EventScreen(role = "manager", navController = rememberNavController())
     }
 }
 
@@ -377,7 +378,7 @@ fun EventScreenPreview() {
 @Composable
 fun AdminEventScreenPreview() {
     HockeyTheme {
-        EventScreen(role = "admin", navController = NavController(LocalContext.current))
+        EventScreen(role = "admin", navController = rememberNavController())
     }
 }
 

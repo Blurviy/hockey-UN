@@ -141,17 +141,17 @@ fun ContentScreen(
                     },
                     onRegisterTeamClick = {}, // No registration for noLogin
                     onAddEventClick = {},
-                    navController = NavController(LocalContext.current)
+                    navController = rememberNavController()
                 )
 
-                2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                2 -> NewsAndUpdateScreen(navController = rememberNavController())
             }
 
             "manager" -> when (selectedScreen) {
                 0 -> HomeScreen(navController, role = "manager")
                 1 -> TeamScreen(navController)
-                2 -> ManagerEventScreen(navController = NavController(LocalContext.current))
-                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                2 -> ManagerEventScreen(navController = rememberNavController())
+                3 -> NewsAndUpdateScreen(navController = rememberNavController())
                 4 -> Settings()
             }
 
@@ -165,9 +165,9 @@ fun ContentScreen(
                     },
                     onRegisterTeamClick = {}, // No registration for noLogin
                     onAddEventClick = {},
-                    navController = NavController(LocalContext.current)
+                    navController = rememberNavController()
                 ) // navController.navigate("event_list_fan") // Placeholder for now as the function is yet to be implemented FanEventScreen(navController = NavController(LocalContext.current))
-                2 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                2 -> NewsAndUpdateScreen(navController = rememberNavController())
                 3 -> Settings()
             }
 
@@ -186,17 +186,17 @@ fun ContentScreen(
                     },
                     onRegisterTeamClick = {}, // No registration for noLogin
                     onAddEventClick = {},
-                    navController = NavController(LocalContext.current)
+                    navController = rememberNavController()
                 ) // PlayerEventScreen(navController = NavController(LocalContext.current))
-                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current))
+                3 -> NewsAndUpdateScreen(navController = rememberNavController())
                 4 -> Settings()
             }
 
             "admin" -> when (selectedScreen) {
                 0 -> HomeScreen(navController, role = "admin")
                 1 -> AdminTeamScreen(navController = navController)
-                2 -> AdminEventScreen(navController = NavController(LocalContext.current))
-                3 -> NewsAndUpdateScreen(navController = NavController(LocalContext.current), role = "admin`````")
+                2 -> AdminEventScreen(navController = rememberNavController())
+                3 -> NewsAndUpdateScreen(navController = rememberNavController(), role = "admin`````")
                 4 -> Settings()
             }
         }

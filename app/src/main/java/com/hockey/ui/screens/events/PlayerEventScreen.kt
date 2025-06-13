@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable
@@ -31,6 +32,6 @@ fun PlayerEventScreen(modifier: Modifier = Modifier, navController: NavControlle
 @Composable
 fun PlayerEventScreenPreview() {
     HockeyTheme {
-        PlayerEventScreen(navController = NavController(LocalContext.current))
+        PlayerEventScreen(navController = rememberNavController())
     }
 }

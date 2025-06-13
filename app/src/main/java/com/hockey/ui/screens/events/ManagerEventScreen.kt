@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.ui.screens.events.Event
 import com.hockey.ui.screens.events.EventCard
 import com.hockey.ui.screens.events.EventRegistrationScreen
@@ -125,6 +126,6 @@ fun ManagerEventScreen(
 @Composable
 fun ManagerEventScreenPreview() {
     HockeyTheme {
-        ManagerEventScreen(navController = NavController(LocalContext.current))
+        ManagerEventScreen(navController = rememberNavController())
     }
 }

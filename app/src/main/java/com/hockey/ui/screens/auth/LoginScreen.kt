@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.navigation.AppScreen
@@ -238,6 +239,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     HockeyTheme {
-        LoginScreen(navController = NavController(LocalContext.current))
+        LoginScreen(navController = rememberNavController())
     }
 }

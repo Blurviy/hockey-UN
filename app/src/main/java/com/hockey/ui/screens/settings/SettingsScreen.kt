@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.ui.theme.HockeyTheme
 
 @Composable
@@ -150,12 +151,12 @@ fun SettingsOption(
 
 @Composable
 fun Settings() {
-    val isSystemDarkTheme = isSystemInDarkTheme() // Detect system theme
+    var isSystemDarkTheme = isSystemInDarkTheme() // Detect system theme
     var isDarkMode by remember { mutableStateOf(isSystemDarkTheme) }
 
     HockeyTheme(darkTheme = isDarkMode) {
         SettingsScreen(
-            navController = NavController(LocalContext.current),
+            navController = rememberNavController(),
             isDarkMode = isDarkMode,
             onThemeChange = { isDarkMode = it } // Update theme state
         )

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.utils.AppUtil
 import com.hockey.R
 import com.hockey.ui.viewmodels.AuthViewModel
@@ -213,5 +214,5 @@ fun SignupScreen(
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(navController = NavController(LocalContext.current))
+    SignupScreen(navController = rememberNavController())
 }

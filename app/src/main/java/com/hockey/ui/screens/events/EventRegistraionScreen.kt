@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hockey.R
 import com.hockey.ui.theme.HockeyTheme
 
@@ -130,7 +131,7 @@ fun EventRegistrationScreenPreview() {
                 time = "5:00 PM",
                 location = "Main Arena"
             ),
-            navController = NavController(LocalContext.current)
+            navController = rememberNavController()
         )
     }
 }
