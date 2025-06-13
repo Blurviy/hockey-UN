@@ -105,6 +105,16 @@ The **Namibia Hockey Union Mobile Application** (Hockey-UN) is designed to moder
 | front-end | A separate frontend that uses activities for different view.|
 | restructure  | Front-end restructuring branch. |
 
+### Rubric
+
+| Criteria / Component     | Poor (15) | Below Average (40) | Average (55) | Good (75) | Excellent (100) |
+|---------------------------|-----------|---------------------|--------------|-----------|-----------------|
+| Functional Requirements  | (9)       | (24)               | (33)         | (45)      | (60)            |
+| Group Creativity         | (1.5)     | (4)                | (5.5)        | (7.5)     | (10)            |
+| Team Collaboration       | (1.5)     | (4)                | (5.5)        | (7.5)     | (10)            |
+| Individual Report        | (1.5)     | (4)                | (5.5)        | (7.5)     | (10)            |
+| Group Presentation       | (1.5)     | (4)                | (5.5)        | (7.5)     | (10)            |
+
 ---
 
 ## Installation and Setup
