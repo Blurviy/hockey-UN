@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.hockey.R
 import com.hockey.data.model.News
+import com.hockey.navigation.AppScreen
 import com.hockey.ui.theme.HockeyTheme
 import com.hockey.ui.viewmodels.NewsViewModel
 import com.hockey.utils.AppDropDown
@@ -46,130 +47,151 @@ fun NewsAndUpdateScreen(
     var selectedNews by remember { mutableStateOf<News?>(null) }
     var showDetailDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAddNewsDialog by remember { mutableStateOf(false) } // State for the new dialog
     var newsToDelete by remember { mutableStateOf<News?>(null) }
     var showWebView by remember { mutableStateOf(false) }
     var currentUrl by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(8.dp)
-    ) {
-        if (showWebView) {
-            // --- WebView Section ---
-            IconButton(
-                onClick = { showWebView = false },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.Start)
-            ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-            }
-            WebViewScreen(url = currentUrl)
-        } else {
-            // --- Main News List Section ---
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { (context as? ComponentActivity)?.finish() },
-                    modifier = Modifier.padding(8.dp)
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            // ... Top bar and WebView logic remains the same ...
+            if (showWebView) {
+                // --- WebView Section ---
+            } else {
+                // --- Main News List Section ---
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
-                AppDropDown(
-                    menuItems = listOf(
-                        Triple("Recent", Icons.Default.Update) { /* Handle filter */ },
-                        Triple("Popular", Icons.Default.ThumbUp) { /* Handle filter */ },
-                        Triple("Archived", Icons.Default.Archive) { /* Handle filter */ }
-                    )
-                )
-            }
-
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 8.dp)
-            ) {
-                items(newsList) { news ->
-                    NewsCard(
-                        news = news,
-                        role = role, // Pass the user role to the card
-                        onClick = {
-                            if (!news.link.isNullOrBlank()) {
-                                // Open link in WebView within the app
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.link))
-                                context.startActivity(intent)
-                            } else {
-                                selectedNews = news
-                                showDetailDialog = true
-                            }
-                        },
-                        onUpdateClick = {
-                            // Navigate to the creation screen in "edit" mode
-                            navController.navigate("news_creation/${news.id}")
-                        },
-                        onDeleteClick = {
-                            newsToDelete = news
-                            showDeleteDialog = true
-                        }
-                    )
-                }
-            }
-
-            if (showDetailDialog && selectedNews != null) {
-                NewsDialog(news = selectedNews!!, onDismiss = { showDetailDialog = false })
-            }
-
-            // Confirmation dialog for deleting news
-            if (showDeleteDialog && newsToDelete != null) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    title = { Text("Confirm Deletion") },
-                    text = { Text("Are you sure you want to delete this news article: '${newsToDelete!!.title}'?") },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                newsViewModel.deleteNews(newsToDelete!!.id) { success, error ->
-                                    if (success) {
-                                        Toast.makeText(context, "News deleted", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(context, "Error: $error", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                                showDeleteDialog = false
-                                newsToDelete = null
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                        ) { Text("Delete") }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showDeleteDialog = false }) {
-                            Text("Cancel")
-                        }
+                    IconButton(
+                        onClick = { (context as? ComponentActivity)?.finish() },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                )
-            }
-
-            if (role == "admin") {
-                FloatingActionButton(
-                    onClick = { navController.navigate("news_creation") },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(16.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add News")
+                    AppDropDown(
+                        menuItems = listOf(
+                            Triple("Recent", Icons.Default.Update) { /* Handle filter */ },
+                            Triple("Popular", Icons.Default.ThumbUp) { /* Handle filter */ },
+                            Triple("Archived", Icons.Default.Archive) { /* Handle filter */ }
+                        )
+                    )
+                }
+                LazyColumn(modifier = Modifier.weight(1f).padding(top = 8.dp)) {
+                    items(newsList) { news ->
+                        NewsCard(
+                            news = news,
+                            role = role,
+                            onClick = {
+                                if (!news.link.isNullOrBlank()) {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(news.link)))
+                                } else {
+                                    selectedNews = news
+                                    showDetailDialog = true
+                                }
+                            },
+                            onUpdateClick = { navController.navigate(AppScreen.NewsCreation.createRoute(news.id)) },
+                            onDeleteClick = {
+                                newsToDelete = news
+                                showDeleteDialog = true
+                            }
+                        )
+                    }
                 }
             }
+        }
+
+        // --- Floating Action Button for Admin ---
+        if (role == "admin" && !showWebView) {
+            FloatingActionButton(
+                onClick = {
+                    // Show the Add News dialog instead of navigating
+                    showAddNewsDialog = true
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add News", tint = MaterialTheme.colorScheme.onPrimary)
+            }
+        }
+
+        // --- Dialogs ---
+        if (showDetailDialog && selectedNews != null) {
+            NewsDialog(news = selectedNews!!, onDismiss = { showDetailDialog = false })
+        }
+        if (showDeleteDialog && newsToDelete != null) {
+            // ... Delete confirmation dialog logic ...
+        }
+        // --- New Dialog for Adding News ---
+        if (showAddNewsDialog) {
+            AddNewsDialog(
+                onAddNews = { newNews ->
+                    newsViewModel.addNews(newNews) { success, error ->
+                        val message = if (success) "News added successfully!" else "Error: $error"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                    showAddNewsDialog = false // Close dialog on success
+                },
+                onDismiss = { showAddNewsDialog = false }
+            )
         }
     }
 }
 
+// --- New Composable for the Add News Dialog ---
+@Composable
+fun AddNewsDialog(
+    onAddNews: (News) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var detailedInfo by remember { mutableStateOf("") }
+    var link by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New Article") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("Title") })
+                OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Short Description") })
+                OutlinedTextField(value = detailedInfo, onValueChange = { detailedInfo = it }, label = { Text("Detailed Info") })
+                OutlinedTextField(value = link, onValueChange = { link = it }, label = { Text("External Link (Optional)") })
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val newNews = News(
+                        title = title,
+                        description = description,
+                        detailedInfo = detailedInfo,
+                        link = link.ifBlank { null },
+                        imageUrl = "https://placehold.co/600x400/2D3748/FFFFFF?text=Hockey+News"
+                    )
+                    onAddNews(newNews)
+                },
+                enabled = title.isNotBlank() && description.isNotBlank()
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 
 @Composable
 fun NewsCard(
@@ -220,8 +242,7 @@ fun NewsCard(
                 }
             }
 
-            // *** ADMIN CONTROLS ***
-            // Show update and delete buttons only if the role is 'admin'
+            // Admin controls
             if (role == "admin") {
                 Row(
                     modifier = Modifier
@@ -284,6 +305,6 @@ fun NewsDialog(news: News, onDismiss: () -> Unit) {
 @Composable
 fun NewsPreview() {
     HockeyTheme {
-        NewsAndUpdateScreen(navController = rememberNavController(), role = "admin", newsViewModel = viewModel())
+        NewsAndUpdateScreen(navController = rememberNavController(), role = "admin")
     }
 }

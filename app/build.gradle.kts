@@ -44,10 +44,42 @@ android {
 
 dependencies {
 
-// Import the BoM for the Firebase platform
+    // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
 
+    // Add the dependency for Firebase Cloud Storage
+    implementation("com.google.firebase:firebase-storage")
+
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Standard Android/Compose dependencies
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+
+    // Firebase Bill of Materials (BoM) - manages versions for other Firebase libs
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+
+    // Firebase Libraries
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+    // ViewModel for Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+
+    // Navigation for Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Coil for asynchronous image loading in Compose
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Add the dependency for Firebase Cloud Storage
+    implementation("com.google.firebase:firebase-storage")
 
     // Add the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies

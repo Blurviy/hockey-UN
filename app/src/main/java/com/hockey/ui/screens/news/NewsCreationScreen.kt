@@ -21,17 +21,13 @@ import com.hockey.ui.viewmodels.NewsViewModel
 fun NewsCreationScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    newsId: String? = null, // Accept an optional newsId for editing
+    newsId: String? = null,
     newsViewModel: NewsViewModel = viewModel()
 ) {
-    // Determine if we are in "edit" mode
     val isEditMode = newsId != null
-
-    // State for form fields
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var detailedInfo by remember { mutableStateOf("") }
-    var imageUrl by remember { mutableStateOf("") }
     var link by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -44,7 +40,6 @@ fun NewsCreationScreen(
                 title = news.title
                 description = news.description
                 detailedInfo = news.detailedInfo
-                imageUrl = news.imageUrl
                 link = news.link ?: ""
             }
         }
@@ -53,10 +48,7 @@ fun NewsCreationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    // Change title based on whether we are creating or updating
-                    Text(if (isEditMode) "Update News Article" else "Create News Article")
-                }
+                title = { Text(if (isEditMode) "Update News Article" else "Create News Article") }
             )
         }
     ) { paddingValues ->
@@ -71,7 +63,6 @@ fun NewsCreationScreen(
             OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("Title") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Short Description") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = detailedInfo, onValueChange = { detailedInfo = it }, label = { Text("Detailed Information") }, modifier = Modifier.fillMaxWidth().height(120.dp))
-            OutlinedTextField(value = imageUrl, onValueChange = { imageUrl = it }, label = { Text("Image URL") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = link, onValueChange = { link = it }, label = { Text("External Link (Optional)") }, modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -79,18 +70,19 @@ fun NewsCreationScreen(
             Button(
                 onClick = {
                     isLoading = true
+                    // Use a default image URL since we removed the image picker
+                    val defaultImageUrl = "https://placehold.co/600x400/2D3748/FFFFFF?text=Hockey+News"
+
                     val newsData = News(
-                        id = newsId ?: "", // Use existing ID or it will be ignored by Firestore on creation
+                        id = newsId ?: "",
                         title = title,
                         description = description,
                         detailedInfo = detailedInfo,
-                        imageUrl = imageUrl,
+                        imageUrl = defaultImageUrl,
                         link = link.ifBlank { null }
-                        // Timestamp is handled by the server/ViewModel
                     )
 
                     if (isEditMode) {
-                        // --- UPDATE LOGIC ---
                         newsViewModel.updateNews(newsId!!, newsData) { success, errorMessage ->
                             isLoading = false
                             if (success) {
@@ -101,7 +93,6 @@ fun NewsCreationScreen(
                             }
                         }
                     } else {
-                        // --- ADD LOGIC ---
                         newsViewModel.addNews(newsData) { success, errorMessage ->
                             isLoading = false
                             if (success) {
@@ -119,7 +110,6 @@ fun NewsCreationScreen(
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    // Change button text based on mode
                     Text(if (isEditMode) "Update News" else "Add News")
                 }
             }
@@ -132,14 +122,5 @@ fun NewsCreationScreen(
 fun NewsCreationScreenPreview() {
     HockeyTheme {
         NewsCreationScreen(navController = rememberNavController())
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NewsUpdateScreenPreview() {
-    HockeyTheme {
-        // Preview for the "update" mode
-        NewsCreationScreen(navController = rememberNavController(), newsId = "some-fake-id")
     }
 }
